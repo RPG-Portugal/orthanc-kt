@@ -23,6 +23,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:${properties["logback.version"]}")
     implementation("io.insert-koin:koin-core-jvm:${properties["koin.version"]}")
     implementation("net.dv8tion:JDA:${properties["jda.version"]}")
+    implementation("club.minnced:jda-ktx:${properties["jda.ktx.version"]}")
 
 
 
