@@ -9,11 +9,18 @@ import com.rpgportugal.orthanc.kt.persistence.repository.application.Application
 import org.koin.java.KoinJavaComponent.inject
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
-import org.ktorm.entity.any
 import org.ktorm.entity.find
 import org.ktorm.entity.sequenceOf
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class SqlApplicationRepository : ApplicationRepository {
+
+    companion object {
+        @JvmStatic
+        val LOG: Logger = LoggerFactory.getLogger(SqlApplicationRepository::class.java)
+    }
+
     private val database: Database by inject(Database::class.java)
 
     override fun getApplicationById(id: Long) : Either<DatabaseError,Application>{
@@ -26,15 +33,17 @@ class SqlApplicationRepository : ApplicationRepository {
             if (application != null){
                 Either.Right(application)
             } else {
+                LOG.error("Failed to find application with id = {}", id)
                 Either.Left(
                     EntityNotFoundError(
                         Applications.tableName,
                         id,
-                        "Failed to find application"
+                        "Failed to find application with id = $id"
                     )
                 )
             }
         } catch (e: Exception) {
+            LOG.error("Error getting application from database", e)
             Either.Left(ThrowableError(e))
         }
     }

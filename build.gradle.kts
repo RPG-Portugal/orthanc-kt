@@ -25,6 +25,7 @@ dependencies {
     implementation("net.dv8tion:JDA:${properties["jda.version"]}")
     implementation("club.minnced:jda-ktx:${properties["jda.ktx.version"]}")
     implementation("org.ktorm:ktorm-core:${properties["ktorm.version"]}")
+    implementation("org.xerial:sqlite-jdbc:${properties["sqlite.driver.version"]}")
 
 
     // Test

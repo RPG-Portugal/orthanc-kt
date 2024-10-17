@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,kotlin,maven,gradle,intellij+all,visualstudiocode,emacs,vim
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,kotlin,maven,gradle,intellij+all,visualstudiocode,emacs,vim
 
+/src/main/resources/secret/*
+*.sqlite
+
 ### Emacs ###
 # -*- mode: gitignore; -*-
 *~
