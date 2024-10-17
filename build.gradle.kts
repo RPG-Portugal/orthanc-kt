@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") version "2.0.21"
+    kotlin("jvm") version "2.0.21"
 }
 
 group = "com.rpgportugal"
@@ -9,28 +9,27 @@ repositories {
     mavenCentral()
 }
 
-kotlin {
-    js(IR) {
-        binaries.executable()
-        useCommonJs()
-        nodejs()
-    }
-    sourceSets {
-        val jsMain by getting {
-            dependencies {
-                dependencies {
-                    implementation(npm("discord.js","14.16.3"))
-                    implementation(npm("discord-api-types","0.37.102"))
-                }
-            }
-        }
-    }
+val ktArrowVersion = properties["kt.arrow.version"]
+
+dependencies {
+    implementation("io.arrow-kt:arrow-core:$ktArrowVersion")
+    implementation("io.arrow-kt:arrow-fx-coroutines:$ktArrowVersion")
+    implementation("io.arrow-kt:arrow-autoclose:$ktArrowVersion")
+    implementation("io.arrow-kt:arrow-optics:$ktArrowVersion")
+    implementation("io.arrow-kt:arrow-collectors:$ktArrowVersion")
+    implementation("io.arrow-kt:arrow-eval:$ktArrowVersion")
+    implementation("io.arrow-kt:arrow-core-serialization:$ktArrowVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${properties["courotines.version"]}")
+    implementation("ch.qos.logback:logback-classic:${properties["logback.version"]}")
+    implementation("io.insert-koin:koin-core-jvm:${properties["koin.version"]}")
+    implementation("net.dv8tion:JDA:${properties["jda.version"]}")
+
+
+
+    // Test
+    testImplementation(kotlin("test"))
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrLink> {
-    compilerOptions.moduleKind.set(org.jetbrains.kotlin.gradle.dsl.JsModuleKind.MODULE_COMMONJS)
-}
-
-tasks.withType(Copy::class.java) {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+tasks.test {
+    useJUnitPlatform()
 }
