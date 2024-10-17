@@ -17,7 +17,7 @@ object DbModule : DepModule{
                 is Either.Left -> throw Exception(result.value.message)
             }
 
-            val url = dbProperties.getProperty("url") ?: throw Exception("Missing url")
+            val url = dbProperties.getProperty("url") ?: throw Exception("Missing url from database.properties")
 
             Database.connect(url=url)
         }
