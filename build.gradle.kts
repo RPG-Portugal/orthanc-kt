@@ -26,7 +26,7 @@ dependencies {
     implementation("club.minnced:jda-ktx:${properties["jda.ktx.version"]}")
     implementation("org.ktorm:ktorm-core:${properties["ktorm.version"]}")
     implementation("org.xerial:sqlite-jdbc:${properties["sqlite.driver.version"]}")
-
+    implementation("org.quartz-scheduler:quartz:${properties["quartz.version"]}")
 
     // Test
     testImplementation(kotlin("test"))
