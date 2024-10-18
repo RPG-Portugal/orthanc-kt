@@ -30,8 +30,10 @@ fun main() {
                 val error = result.value
                 LOG.error("Failed to retrieve application: $error")
                 when (error) {
-                    is EntityNotFoundError<*> -> throw Exception("Entity ${error.entityName} with id = ${error.id} not found")
-                    is ThrowableError<*> -> throw error.exception
+                    is EntityNotFoundError<*> ->
+                        throw Exception("Entity ${error.entityName} with id = ${error.id} not found")
+                    is ThrowableError<*> ->
+                        throw error.exception
                 }
             }
         }
