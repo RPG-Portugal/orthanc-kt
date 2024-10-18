@@ -9,7 +9,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class ResourcePropertiesLoader : PropertiesLoader {
+class ResourcePropertiesLoader(private val classLoader: ClassLoader) : PropertiesLoader {
 
     companion object {
         @JvmStatic
@@ -18,7 +18,7 @@ class ResourcePropertiesLoader : PropertiesLoader {
 
     override fun load(fileName: String): Either<PropertiesLoadError, Properties> =
         Either.catch {
-            ResourcePropertiesLoader::class.java.classLoader.getResourceAsStream(fileName)
+            classLoader.getResourceAsStream(fileName)
         }.mapLeft {
             LOG.error("Error while loading $fileName", it)
             ThrowableError(it)

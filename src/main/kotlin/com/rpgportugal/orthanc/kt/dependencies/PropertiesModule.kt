@@ -9,6 +9,6 @@ import org.koin.dsl.module
 
 object PropertiesModule : DepModule {
     override val module = module {
-        singleOf(::ResourcePropertiesLoader) bind PropertiesLoader::class
+        single { ResourcePropertiesLoader(PropertiesModule.javaClass.classLoader) } bind PropertiesLoader::class
     }
 }
