@@ -14,14 +14,12 @@ import org.ktorm.entity.sequenceOf
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class SqlApplicationRepository : ApplicationRepository {
+class SqlApplicationRepository(private val database: Database) : ApplicationRepository {
 
     companion object {
         @JvmStatic
         val LOG: Logger = LoggerFactory.getLogger(SqlApplicationRepository::class.java)
     }
-
-    private val database: Database by inject(Database::class.java)
 
     override fun getApplicationById(id: Long) : Either<DatabaseError,Application>{
         return try {

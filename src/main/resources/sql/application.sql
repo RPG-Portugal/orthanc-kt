@@ -1,4 +1,4 @@
-create table main.application
+create table application
 (
     id    integer null on conflict rollback
         constraint application_pk

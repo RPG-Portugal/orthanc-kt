@@ -4,7 +4,6 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.application.db.SqlApplicationRepository
-import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.ktorm.database.Database
@@ -21,6 +20,6 @@ object DbModule : DepModule{
 
             Database.connect(url=url)
         }
-        factoryOf(::SqlApplicationRepository) bind ApplicationRepository::class
+        factory { SqlApplicationRepository(get()) } bind ApplicationRepository::class
     }
 }
