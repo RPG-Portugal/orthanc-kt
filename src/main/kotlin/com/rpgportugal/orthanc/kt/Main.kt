@@ -24,6 +24,6 @@ fun main() {
         }
 
     val jda = light(token=application.token, enableCoroutines = true) {
-        setEnabledIntents(GatewayIntent.GUILD_MESSAGES)
+        setEnabledIntents(GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
     }
 }
