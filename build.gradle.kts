@@ -27,6 +27,8 @@ dependencies {
     implementation("org.ktorm:ktorm-core:${properties["ktorm.version"]}")
     implementation("org.xerial:sqlite-jdbc:${properties["sqlite.driver.version"]}")
     implementation("org.quartz-scheduler:quartz:${properties["quartz.version"]}")
+    //Bot Module Dependencies
+    implementation("dev.diceroll:dice-parser:0.3.0")
 
     // Test
     testImplementation(kotlin("test"))

@@ -2,6 +2,7 @@ package com.rpgportugal.orthanc.kt
 
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.dependencies.Modules
+import com.rpgportugal.orthanc.kt.discord.module.BotModuleLoader
 import com.rpgportugal.orthanc.kt.error.EntityNotFoundError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.persistence.dto.Application
@@ -40,4 +41,6 @@ fun main() {
         token = application.token,
         enableCoroutines = true,
         intents = GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
+
+    BotModuleLoader().loadModules(jda)
 }
