@@ -2,7 +2,9 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,kotlin,maven,gradle,intellij+all,visualstudiocode,emacs,vim
 
 /src/main/resources/secret/*
+/src/main/resources/env/*
 *.sqlite
+
 
 ### Emacs ###
 # -*- mode: gitignore; -*-

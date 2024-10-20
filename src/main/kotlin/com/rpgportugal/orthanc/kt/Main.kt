@@ -1,9 +1,11 @@
 package com.rpgportugal.orthanc.kt
 
 import arrow.core.Either
+import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.dependencies.Modules
 import com.rpgportugal.orthanc.kt.discord.module.BotModuleLoader
 import com.rpgportugal.orthanc.kt.error.EntityNotFoundError
+import com.rpgportugal.orthanc.kt.error.NullInputStreamError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.persistence.dto.Application
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
@@ -20,19 +22,44 @@ fun main() {
 
     val koin = startKoin { modules(Modules.modules) }.koin
 
-    LOG.info("Retrieving application")
+    LOG.info("Retrieving application ID")
+
+    val propertiesLoader = koin.get<PropertiesLoader>()
+
+    val applicationProperties =
+        when(val result = propertiesLoader.load("env/application.properties")) {
+            is Either.Right -> result.value
+            is Either.Left  -> {
+                val error = result.value
+                LOG.error("Failed to load application.properties => {}", error.message)
+                when (error) {
+                    is ThrowableError<*> -> throw error.exception
+                    is NullInputStreamError -> throw Exception("Failed to retrieve ${error.fileName}")
+                }
+            }
+        }
+
+    val appId =
+        applicationProperties
+            .getProperty("app.id")
+            ?.toLong()
+            ?: throw Exception("Missing app.id property")
+
+    LOG.info("Retrieved application ID: {}", appId)
 
     val applicationRepository = koin.get<ApplicationRepository>()
 
     val application: Application =
-        when(val result = applicationRepository.getApplicationById(1L)) {
+        when(val result = applicationRepository.getApplicationById(appId)) {
             is Either.Right -> result.value
             is Either.Left -> {
                 val error = result.value
                 LOG.error("Failed to retrieve application: $error")
                 when (error) {
-                    is EntityNotFoundError<*> -> throw Exception("Entity ${error.entityName} with id = ${error.id} not found")
-                    is ThrowableError<*> -> throw error.exception
+                    is EntityNotFoundError<*> ->
+                        throw Exception("Entity ${error.entityName} with id = ${error.id} not found")
+                    is ThrowableError<*> ->
+                        throw error.exception
                 }
             }
         }
