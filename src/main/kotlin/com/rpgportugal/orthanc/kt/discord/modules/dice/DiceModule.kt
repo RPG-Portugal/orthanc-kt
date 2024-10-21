@@ -14,14 +14,16 @@ import dev.minn.jda.ktx.interactions.commands.slash
 import dev.minn.jda.ktx.interactions.commands.updateCommands
 import dev.minn.jda.ktx.interactions.components.getOption
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.seconds
 
-class DiceModule : BotModule, KoinComponent {
+class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
 
     val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
-    val propertiesEither = propertiesLoader.load("secret/diceModule.properties")
+    val propertiesEither = propertiesLoader.load("env/diceModule.properties")
 
     var onRoll : CoroutineEventListener? = null
 
@@ -49,27 +51,12 @@ class DiceModule : BotModule, KoinComponent {
         onRoll = jda.onCommand("roll", timeout = 2.seconds) { event ->
             val formula = event.getOption<String>("formula") ?: ""
 
-            val rollResult = Either.catch {
-                detailedRoll(formula)
-            }.mapLeft {
-                DiceParsingError(formula, it.message ?: "Error parsing the formula.")
+            doRoll(formula, event.user.effectiveName){
+                event.reply(it).queue()
             }
-
-            when (rollResult) {
-                is Either.Left -> {
-                    val error = rollResult.value
-                    event.reply("${event.user.effectiveName} Error rolling ${error.formula} => ${error.message}.\nCheck this link for more information: https://github.com/diceroll-dev/dice-parser/tree/main?tab=readme-ov-file#supported-notation")
-                        .queue()
-                }
-
-                is Either.Right -> {
-                    val resultTree = rollResult.value
-                    val flatResults = resultTree.results.map { it.value.toString() }.reduce { acc, i -> "$acc,$i" }
-                    event.reply("${event.user.effectiveName} rolled: [$flatResults] => ${resultTree.value}").queue()
-                }
-            }
-
         }
+
+        jda.addEventListener(this)
 
         jda.updateCommands {
             slash("roll", "rola todos os dados") {
@@ -82,6 +69,42 @@ class DiceModule : BotModule, KoinComponent {
     override fun detach(jda: JDA) {
         onRoll?.cancel()
         onRoll = null
+    }
+
+    override fun onMessageReceived(event: MessageReceivedEvent) {
+        val message = event.message.contentStripped
+        if(!message.lowercase().startsWith("\$roll")) return
+
+        val messageTokens = message.split(" ")
+        if(messageTokens.size < 2) return
+
+        val formula = messageTokens[1]
+
+        doRoll(formula, event.author.effectiveName){
+            event.channel.sendMessage(it).queue()
+        }
+
+    }
+
+    fun doRoll (formula: String, userName: String, sendReply: (String) -> Unit ) {
+        val rollResult = Either.catch {
+            detailedRoll(formula)
+        }.mapLeft {
+            DiceParsingError(formula, it.message ?: "Error parsing the formula.")
+        }
+
+        when (rollResult) {
+            is Either.Left -> {
+                val error = rollResult.value
+                sendReply("$userName Error rolling ${error.formula} => ${error.message}.\nCheck this link for more information: https://github.com/diceroll-dev/dice-parser/tree/main?tab=readme-ov-file#supported-notation")
+            }
+
+            is Either.Right -> {
+                val resultTree = rollResult.value
+                val flatResults = resultTree.results.map { it.value.toString() }.reduce { acc, i -> "$acc,$i" }
+                sendReply("$userName rolled: [$flatResults] => ${resultTree.value}")
+            }
+        }
     }
 
 }
