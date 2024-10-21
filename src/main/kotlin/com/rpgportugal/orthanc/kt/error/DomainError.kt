@@ -1,6 +1,6 @@
 package com.rpgportugal.orthanc.kt.error
 
-sealed interface DomainError {
+interface DomainError {
     val message: String
 }
 
@@ -33,11 +33,3 @@ data class EntityNotFoundError<Id>(
     val id: Id,
     override val message: String
 ) : DatabaseError
-
-// Database Errors
-sealed interface DiceModuleError : DomainError
-
-data class DiceParsingError(
-    val formula: String,
-    override val message: String
-) : DiceModuleError

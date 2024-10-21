@@ -3,7 +3,6 @@ package com.rpgportugal.orthanc.kt.discord.modules.dice
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
-import com.rpgportugal.orthanc.kt.error.DiceParsingError
 import dev.diceroll.parser.detailedRoll
 import dev.minn.jda.ktx.events.CoroutineEventListener
 import dev.minn.jda.ktx.events.onCommand
@@ -25,7 +24,7 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
 
     var onRoll : CoroutineEventListener? = null
 
-    override fun getName(): String = "Dice Module"
+    override fun getName(): String = "Dice Roll"
 
     override fun attach(jda: JDA) {
         onRoll = jda.onCommand("roll", timeout = 2.seconds) { event ->

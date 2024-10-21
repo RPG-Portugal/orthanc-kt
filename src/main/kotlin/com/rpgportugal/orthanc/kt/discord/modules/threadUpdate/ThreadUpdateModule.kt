@@ -1,4 +1,4 @@
-package com.rpgportugal.orthanc.kt.discord.modules.dice
+package com.rpgportugal.orthanc.kt.discord.modules.threadUpdate
 
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
@@ -18,7 +18,7 @@ class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
     override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
     override val propertiesEither = propertiesLoader.load("env/threadUpdateModule.properties")
 
-    override fun getName(): String = "Thread Update Module"
+    override fun getName(): String = "Thread Update"
 
     override fun attach(jda: JDA) {
         jda.addEventListener(this)
