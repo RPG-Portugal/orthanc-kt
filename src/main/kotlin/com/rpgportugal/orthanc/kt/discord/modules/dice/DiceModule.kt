@@ -4,8 +4,6 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.DiceParsingError
-import com.rpgportugal.orthanc.kt.error.MissingPropertyError
-import com.rpgportugal.orthanc.kt.logging.log
 import dev.diceroll.parser.detailedRoll
 import dev.minn.jda.ktx.events.CoroutineEventListener
 import dev.minn.jda.ktx.events.onCommand
@@ -22,30 +20,12 @@ import kotlin.time.Duration.Companion.seconds
 
 class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
 
-    val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
-    val propertiesEither = propertiesLoader.load("env/diceModule.properties")
+    override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
+    override val propertiesEither = propertiesLoader.load("env/diceModule.properties")
 
     var onRoll : CoroutineEventListener? = null
 
     override fun getName(): String = "Dice Module"
-
-    override fun isEnabled(): Boolean {
-
-        return when (propertiesEither) {
-            is Either.Left -> false
-            is Either.Right -> when (val enabledProperty = Either.catch {
-                propertiesEither.value.getProperty("enabled") ?: throw Exception("Missing enabled property!")
-            }.mapLeft {
-                MissingPropertyError("enabled", it.message?:"")
-            }) {
-                is Either.Left -> {
-                    log.error("Missing property ${enabledProperty.value.propertyName}.")
-                    false
-                }
-                is Either.Right -> enabledProperty.value == "true"
-            }
-        }
-    }
 
     override fun attach(jda: JDA) {
         onRoll = jda.onCommand("roll", timeout = 2.seconds) { event ->
@@ -69,6 +49,7 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
     override fun detach(jda: JDA) {
         onRoll?.cancel()
         onRoll = null
+        jda.removeEventListener(this)
     }
 
     override fun onMessageReceived(event: MessageReceivedEvent) {

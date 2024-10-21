@@ -2,6 +2,7 @@ package com.rpgportugal.orthanc.kt.dependencies
 
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.discord.modules.dice.DiceModule
+import com.rpgportugal.orthanc.kt.discord.modules.dice.ThreadUpdateModule
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -12,6 +13,7 @@ object Modules {
         DbModule.module,
         module {
             single { DiceModule() } bind BotModule::class
+            single { ThreadUpdateModule() } bind BotModule::class
         }
     )
 }
