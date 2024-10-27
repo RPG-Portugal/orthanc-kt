@@ -74,7 +74,7 @@ class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
             val author = event.jda.getUserById(event.messageAuthorIdLong) ?: return@queue //User not found (probably left the server)
             event.guild.addRoleToMember(author, role).queue()
             val warningChannel = event.jda.getTextChannelById(warningChannelId?:"")
-            warningChannel?.sendMessage(":lemon: Utilizador ${author.effectiveName} (@${author.name}) foi limonado.")?.queue()
+            warningChannel?.sendMessage(":lemon: Utilizador ${author.effectiveName} (@${author.name}) foi limonado (${message.jumpUrl}).")?.queue()
         }
     }
 }
