@@ -4,6 +4,7 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.dependencies.DepModule
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
+import com.rpgportugal.orthanc.kt.logging.log
 import dev.diceroll.parser.ResultTree
 import dev.diceroll.parser.detailedRoll
 import dev.minn.jda.ktx.events.CoroutineEventListener
@@ -44,9 +45,11 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
             is Either.Right -> {
                 val props = propertiesEither.value
                 diceMap["d20"] = props.getProperty("emojiIdD20")
+                log.warn("emojiIdD20: ${props.getProperty("emojiIdD20")}")
                 diceMap["d12"] = props.getProperty("emojiIdD12")
                 diceMap["d10"] = props.getProperty("emojiIdD10")
                 diceMap["d8"] = props.getProperty("emojiIdD8")
+                diceMap["d6"] = props.getProperty("emojiIdD6")
                 diceMap["d4"] = props.getProperty("emojiIdD4")
                 diceMap["d2"] = props.getProperty("emojiIdD2")
                 diceMap["dF"] = props.getProperty("emojiIdDF")

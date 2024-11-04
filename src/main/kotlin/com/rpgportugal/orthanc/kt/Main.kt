@@ -17,57 +17,63 @@ import org.slf4j.LoggerFactory.getLogger
 
 val LOG: Logger = getLogger("main")
 
-fun main() {
-    LOG.info("Starting dependency modules")
+class Main {
 
-    val koin = startKoin { modules(Modules.modules) }.koin
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            LOG.info("Starting dependency modules")
 
-    LOG.info("Retrieving application ID")
+            val koin = startKoin { modules(Modules.modules) }.koin
 
-    val propertiesLoader = koin.get<PropertiesLoader>()
+            LOG.info("Retrieving application ID")
 
-    val applicationProperties =
-        when(val result = propertiesLoader.load("env/application.properties")) {
-            is Either.Right -> result.value
-            is Either.Left  -> {
-                val error = result.value
-                LOG.error("Failed to load application.properties => {}", error.message)
-                when (error) {
-                    is ThrowableError<*> -> throw error.exception
-                    is NullInputStreamError -> throw Exception("Failed to retrieve ${error.fileName}")
+            val propertiesLoader = koin.get<PropertiesLoader>()
+
+            val applicationProperties =
+                when(val result = propertiesLoader.load("env/application.properties")) {
+                    is Either.Right -> result.value
+                    is Either.Left  -> {
+                        val error = result.value
+                        LOG.error("Failed to load application.properties => {}", error.message)
+                        when (error) {
+                            is ThrowableError<*> -> throw error.exception
+                            is NullInputStreamError -> throw Exception("Failed to retrieve ${error.fileName}")
+                        }
+                    }
                 }
-            }
-        }
 
-    val appId =
-        applicationProperties
-            .getProperty("app.id")
-            ?.toLong()
-            ?: throw Exception("Missing app.id property")
+            val appId =
+                applicationProperties
+                    .getProperty("app.id")
+                    ?.toLong()
+                    ?: throw Exception("Missing app.id property")
 
-    LOG.info("Retrieved application ID: {}", appId)
+            LOG.info("Retrieved application ID: {}", appId)
 
-    val applicationRepository = koin.get<ApplicationRepository>()
+            val applicationRepository = koin.get<ApplicationRepository>()
 
-    val application: Application =
-        when(val result = applicationRepository.getApplicationById(appId)) {
-            is Either.Right -> result.value
-            is Either.Left -> {
-                val error = result.value
-                LOG.error("Failed to retrieve application: $error")
-                when (error) {
-                    is EntityNotFoundError<*> ->
-                        throw Exception("Entity ${error.entityName} with id = ${error.id} not found")
-                    is ThrowableError<*> ->
-                        throw error.exception
+            val application: Application =
+                when(val result = applicationRepository.getApplicationById(appId)) {
+                    is Either.Right -> result.value
+                    is Either.Left -> {
+                        val error = result.value
+                        LOG.error("Failed to retrieve application: $error")
+                        when (error) {
+                            is EntityNotFoundError<*> ->
+                                throw Exception("Entity ${error.entityName} with id = ${error.id} not found")
+                            is ThrowableError<*> ->
+                                throw error.exception
+                        }
+                    }
                 }
-            }
+
+            val jda = createJDA(
+                token = application.token,
+                enableCoroutines = true,
+                intents = GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
+
+            BotModuleLoader().loadModules(jda)
         }
-
-    val jda = createJDA(
-        token = application.token,
-        enableCoroutines = true,
-        intents = GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
-
-    BotModuleLoader().loadModules(jda)
+    }
 }

@@ -82,11 +82,11 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
 
         if(message.channel.id == honeypotChannelId) {
             message.delete().queue()
-        }
 
-        if(regex?.matches(message.contentRaw) == true){
-            event.guild.ban(listOf(author), Duration.ofDays(1L)).queue{
-                event.guild.unban(author).queue()
+            if(regex?.matches(message.contentRaw) == true){
+                event.guild.ban(listOf(author), Duration.ofDays(1L)).queue{
+                    event.guild.unban(author).queue()
+                }
             }
         }
 

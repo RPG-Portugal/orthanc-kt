@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.from
+
 plugins {
     kotlin("jvm") version "2.0.21"
 }
@@ -36,4 +38,28 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Implementation-Title"] = "RPG PT Orthanc"
+        attributes["Implementation-Version"] = version
+        attributes["Main-Class"] = "com.rpgportugal.orthanc.kt.Main"
+    }
+}
+
+tasks {
+    register("fatJar", Jar::class.java) {
+        archiveClassifier.set("all")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        manifest {
+            attributes("Main-Class" to "com.rpgportugal.orthanc.kt.Main")
+        }
+        from(configurations.runtimeClasspath.get()
+            .onEach { println("add from dependencies: ${it.name}") }
+            .map { if (it.isDirectory) it else zipTree(it) })
+        val sourcesMain = sourceSets.main.get()
+        sourcesMain.allSource.forEach { println("add from sources: ${it.name}") }
+        from(sourcesMain.output)
+    }
 }
