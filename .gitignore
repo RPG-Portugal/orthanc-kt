@@ -4,6 +4,7 @@
 /src/main/resources/dev/secret/*
 /src/main/resources/dev/env/*
 /src/main/resources/env.properties
+/src/main/resources/**/*.properties
 
 /src/main/resources/prd/*
 
