@@ -1,6 +1,6 @@
 package com.rpgportugal.orthanc.kt.error
 
-interface DomainError {
+sealed interface DomainError {
     val message: String
 }
 
