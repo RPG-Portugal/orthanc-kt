@@ -6,5 +6,5 @@ import com.rpgportugal.orthanc.kt.error.DbError
 import com.rpgportugal.orthanc.kt.persistence.dto.Emoji
 
 interface EmojiRepository {
-    fun getEmojiKeyToDiscordCodeMap(): Either<DbError, Map<EmojiKey, String>>
+    fun getEmojiKeyToDiscordCodeMap(): Either<DbError, Map<String, String>>
 }

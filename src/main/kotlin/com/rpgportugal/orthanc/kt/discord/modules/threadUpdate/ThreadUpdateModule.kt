@@ -2,6 +2,7 @@ package com.rpgportugal.orthanc.kt.discord.modules.threadUpdate
 
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
+import com.rpgportugal.orthanc.kt.discord.ArchiveState
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel
@@ -11,11 +12,8 @@ import net.dv8tion.jda.api.events.channel.GenericChannelEvent
 import net.dv8tion.jda.api.events.channel.update.ChannelUpdateArchivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
-class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
-
-    private val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
+class ThreadUpdateModule(propertiesLoader: PropertiesLoader) : ListenerAdapter(), BotModule, KoinComponent {
 
     override val propertiesEither = propertiesLoader.load("env/threadUpdateModule.properties")
 
@@ -31,12 +29,10 @@ class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
 
     override fun onChannelUpdateArchived(event: ChannelUpdateArchivedEvent) {
         doThreadChangedEvent(event) { thread ->
-            ":blue_book: Thread ${thread.name} (${thread.jumpUrl}) mudou o estado para ${
-                getArchiveState(
-                    event.oldValue == true,
-                    event.newValue == true
-                )
-            }"
+            val state =
+                getArchiveState(event.oldValue ?: false, event.newValue ?: false)
+
+            ":blue_book: Thread ${thread.name} (${thread.jumpUrl}) mudou o estado para $state"
         }
     }
 
@@ -52,7 +48,7 @@ class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
         }
     }
 
-    fun doThreadChangedEvent(event: GenericChannelEvent, messageFn: (thread: ThreadChannel) -> String) {
+    private fun doThreadChangedEvent(event: GenericChannelEvent, messageFn: (thread: ThreadChannel) -> String) {
         if (!event.channel.type.isThread) return // It's not a thread
         val warningChannelId = when (propertiesEither) {
             is Either.Left -> return // No warning channel defined.
@@ -64,11 +60,11 @@ class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
         warningChannel?.sendMessage(messageFn(thread))?.queue()
     }
 
-    private fun getArchiveState(old: Boolean, new: Boolean): String {
+    private fun getArchiveState(old: Boolean, new: Boolean): ArchiveState {
         return when {
-            old && !new -> "UNARCHIVED"
-            !old && new -> "ARCHIVED"
-            else -> "IMPOSSIBLE"
+            old && !new -> ArchiveState.Unarchived
+            !old && new -> ArchiveState.Archived
+            else -> ArchiveState.Impossible
         }
     }
 }

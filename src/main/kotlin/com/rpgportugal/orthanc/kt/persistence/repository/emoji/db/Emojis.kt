@@ -7,6 +7,6 @@ import org.ktorm.schema.enum
 import org.ktorm.schema.varchar
 
 object Emojis : Table<Emoji>("emojis") {
-    val emoji_key = enum<EmojiKey>("emoji_key").primaryKey().bindTo { it.emojiKey }
+    val emoji_key = varchar("emoji_key").primaryKey().bindTo { it.emojiKey }
     val discordId = varchar("discord_id").primaryKey().bindTo { it.discordId }
 }

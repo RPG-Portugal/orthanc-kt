@@ -8,19 +8,18 @@ import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.quartz.JobDataMap
 import java.time.OffsetDateTime
 
-class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
+class RoleAwardModule(
+    propertiesLoader: PropertiesLoader,
+    private val scheduler: Scheduler
+) : ListenerAdapter(), BotModule {
 
     private val schedulerGroupName = "RoleAward"
     private val triggerName = "triggerEveryDayAt5AM"
     private val jobName = "roleCleanup"
 
-    private val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
-    private val scheduler: Scheduler by inject()
     override val propertiesEither = propertiesLoader.load("env/roleAwardModule.properties")
 
     private var roleId: String? = null

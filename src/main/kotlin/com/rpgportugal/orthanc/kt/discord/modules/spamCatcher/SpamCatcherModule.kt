@@ -8,18 +8,19 @@ import com.rpgportugal.orthanc.kt.scheduling.Scheduler
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.quartz.JobDataMap
 import java.time.Duration
 
-class SpamCatcherModule : ListenerAdapter(), BotModule, KoinComponent {
+class SpamCatcherModule(
+    propertiesLoader: PropertiesLoader,
+    private val scheduler: Scheduler
+) : ListenerAdapter(), BotModule{
 
     companion object : DepModule {
         override val module = module {
-            single { SpamCatcherModule() } bind BotModule::class
+            single { SpamCatcherModule(get(), get()) } bind BotModule::class
         }
     }
 
@@ -27,8 +28,6 @@ class SpamCatcherModule : ListenerAdapter(), BotModule, KoinComponent {
     private val triggerName = "sendWarnMessageTrigger"
     private val jobName = "sendWarnMessageJob"
 
-    private val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
-    private val scheduler: Scheduler by inject()
     override val propertiesEither = propertiesLoader.load("env/spamCatcher.properties")
 
     private var linkRegex: String? = null

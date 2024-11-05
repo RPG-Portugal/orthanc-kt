@@ -6,6 +6,6 @@ import org.koin.dsl.module
 
 object RoleAwardKoinModule : DepModule {
     override val module = module {
-        single { RoleAwardModule() }
+        single { RoleAwardModule(get(), get()) }
     }
 }
