@@ -4,8 +4,8 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.dependencies.Modules
 import com.rpgportugal.orthanc.kt.discord.module.BotModuleLoader
-import com.rpgportugal.orthanc.kt.error.EntityNotFoundError
-import com.rpgportugal.orthanc.kt.error.NullInputStreamError
+import com.rpgportugal.orthanc.kt.error.DbError
+import com.rpgportugal.orthanc.kt.error.PropertiesLoadError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.persistence.dto.Application
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
@@ -38,7 +38,10 @@ class Main {
                         LOG.error("Failed to load application.properties => {}", error.message)
                         when (error) {
                             is ThrowableError<*> -> throw error.exception
-                            is NullInputStreamError -> throw Exception("Failed to retrieve ${error.fileName}")
+                            is PropertiesLoadError.NullInputStreamError ->
+                                throw Exception("Failed to retrieve ${error.fileName}")
+                            is PropertiesLoadError.MissingPropertyError ->
+                                throw Exception("Failed to retrieve property ${error.propertyName}")
                         }
                     }
                 }
@@ -60,7 +63,7 @@ class Main {
                         val error = result.value
                         LOG.error("Failed to retrieve application: $error")
                         when (error) {
-                            is EntityNotFoundError<*> ->
+                            is DbError.EntityNotFoundError<*> ->
                                 throw Exception("Entity ${error.entityName} with id = ${error.id} not found")
 
                             is ThrowableError<*> ->
