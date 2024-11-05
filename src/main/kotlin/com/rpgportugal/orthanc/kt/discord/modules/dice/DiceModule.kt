@@ -30,6 +30,7 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
         }
     }
 
+    override val emojiRepository: EmojiRepository
     override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
     override val propertiesEither = propertiesLoader.load("dev/env/diceModule.properties")
 
@@ -40,6 +41,8 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
     override fun getName(): String = "Dice Roll"
 
     override fun attach(jda: JDA) {
+
+
         when (propertiesEither) {
             is Either.Left -> {}
             is Either.Right -> {
