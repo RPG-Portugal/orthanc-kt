@@ -16,7 +16,7 @@ import org.koin.core.component.inject
 class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
 
     override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
-    override val propertiesEither = propertiesLoader.load("dev/env/threadUpdateModule.properties")
+    override val propertiesEither = propertiesLoader.load("env/threadUpdateModule.properties")
 
     override fun getName(): String = "Thread Update"
 

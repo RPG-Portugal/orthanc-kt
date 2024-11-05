@@ -29,7 +29,7 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
 
     override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
     val scheduler: Scheduler by inject()
-    override val propertiesEither = propertiesLoader.load("dev/env/spamCatcher.properties")
+    override val propertiesEither = propertiesLoader.load("env/spamCatcher.properties")
 
     var linkRegex: String? = null
     var honeypotChannelId: String? = null

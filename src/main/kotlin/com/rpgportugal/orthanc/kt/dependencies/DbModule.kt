@@ -16,7 +16,7 @@ object DbModule : DepModule {
         factory {
             val propertiesLoader = get<PropertiesLoader>()
 
-            val dbProperties = when (val result = propertiesLoader.load("dev/secret/database.properties")) {
+            val dbProperties = when (val result = propertiesLoader.load("secret/database.properties")) {
                 is Either.Right -> result.value
                 is Either.Left -> when (val error = result.value) {
                     is ThrowableError<*> -> throw error.exception

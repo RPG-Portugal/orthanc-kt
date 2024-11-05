@@ -31,7 +31,7 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
     }
 
     override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
-    override val propertiesEither = propertiesLoader.load("dev/env/diceModule.properties")
+    override val propertiesEither = propertiesLoader.load("env/diceModule.properties")
 
     var onRoll: CoroutineEventListener? = null
 
