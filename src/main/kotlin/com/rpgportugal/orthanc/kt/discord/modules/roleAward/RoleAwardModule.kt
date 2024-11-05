@@ -11,6 +11,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.quartz.JobDataMap
+import java.time.LocalDateTime
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 
 class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
 
@@ -70,6 +73,9 @@ class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
         val role = event.guild.getRoleById(roleId?:return) ?: return // No role configured
 
         event.retrieveMessage().queue { message ->
+
+            val startOfDay = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0)
+            if(message.timeCreated.isBefore(startOfDay)) return@queue
 
             val count = message.getReaction(event.emoji)?.count ?: 0
             if(count < threshold) return@queue //Not enough emojis
