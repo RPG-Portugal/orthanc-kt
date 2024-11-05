@@ -2,7 +2,8 @@ package com.rpgportugal.orthanc.kt.dependencies
 
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
-import com.rpgportugal.orthanc.kt.error.NullInputStreamError
+import com.rpgportugal.orthanc.kt.error.PropertiesLoadError
+import com.rpgportugal.orthanc.kt.error.PropertiesLoadError.NullInputStreamError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.application.db.SqlApplicationRepository
@@ -20,6 +21,7 @@ object DbModule : DepModule {
                 is Either.Left -> when (val error = result.value) {
                     is ThrowableError<*> -> throw error.exception
                     is NullInputStreamError -> throw Exception("${error.fileName} not found - ${error.message}")
+                    is PropertiesLoadError.MissingPropertyError -> throw Exception("property ${error.propertyName} not found")
                 }
             }
 

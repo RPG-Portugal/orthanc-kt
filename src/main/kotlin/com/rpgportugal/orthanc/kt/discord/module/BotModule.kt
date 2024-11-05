@@ -2,7 +2,7 @@ package com.rpgportugal.orthanc.kt.discord.module
 
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
-import com.rpgportugal.orthanc.kt.error.MissingPropertyError
+import com.rpgportugal.orthanc.kt.error.PropertiesLoadError.MissingPropertyError
 import com.rpgportugal.orthanc.kt.error.PropertiesLoadError
 import com.rpgportugal.orthanc.kt.logging.Logging
 import com.rpgportugal.orthanc.kt.logging.log

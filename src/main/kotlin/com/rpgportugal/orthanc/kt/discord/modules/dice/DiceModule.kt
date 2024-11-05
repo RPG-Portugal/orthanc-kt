@@ -4,6 +4,7 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.dependencies.DepModule
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
+import com.rpgportugal.orthanc.kt.error.DiceModuleError
 import com.rpgportugal.orthanc.kt.logging.log
 import dev.diceroll.parser.detailedRoll
 import dev.minn.jda.ktx.events.CoroutineEventListener
@@ -98,7 +99,7 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
         val rollResult = Either.catch {
             detailedRoll(formula)
         }.mapLeft {
-            DiceParsingError(formula, it.message ?: "Error parsing the formula.")
+            DiceModuleError.DiceParsingError(formula, it.message ?: "Error parsing the formula.")
         }
 
         when (rollResult) {
