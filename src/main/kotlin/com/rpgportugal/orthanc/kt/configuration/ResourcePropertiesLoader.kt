@@ -16,7 +16,7 @@ class ResourcePropertiesLoader(private val classLoader: ClassLoader) : Propertie
         val LOG: Logger = LoggerFactory.getLogger(ResourcePropertiesLoader::class.java)
 
         @JvmStatic
-        val PROPERTTIES_BASE: String = getPropertiesBasePath()
+        val PROPERTIES_BASE: String = getPropertiesBasePath()
 
         @JvmStatic
         private fun getPropertiesBasePath(): String {
@@ -31,7 +31,7 @@ class ResourcePropertiesLoader(private val classLoader: ClassLoader) : Propertie
         }
     }
 
-    fun loadFromBase(fileName: String, base: String = PROPERTTIES_BASE): Either<PropertiesLoadError, Properties> {
+    fun loadFromBase(fileName: String, base: String = PROPERTIES_BASE): Either<PropertiesLoadError, Properties> {
             val path = "$base/$fileName";
             return Either.catch {
                 classLoader.getResourceAsStream(path)
