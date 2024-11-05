@@ -41,6 +41,7 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
 
     var linkRegex: String? = null
     var honeypotChannelId: String? = null
+    var warningChannelId: String? = null
     var cron: String = "0 */5 * * * ? *"
     var regex : Regex? = null
 
@@ -53,6 +54,7 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
             is Either.Right -> {
                 linkRegex = propertiesEither.value.getProperty("linkRegex")
                 honeypotChannelId = propertiesEither.value.getProperty("honeypotChannelId")
+                warningChannelId = propertiesEither.value.getProperty("warningChannelId")
                 cron = propertiesEither.value.getProperty("cron") ?: "0 */5 * * * ? *"
                 regex = if(linkRegex?.isNotBlank() == true) { linkRegex!!.toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)) } else { null }
                 scheduler.simpleCronJobSchedule(
@@ -84,6 +86,11 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
             message.delete().queue()
 
             if(regex?.matches(message.contentRaw) == true){
+                if(warningChannelId?.isNotEmpty() == true){
+                    val warningChannel = event.jda.getTextChannelById(warningChannelId!!)
+                    warningChannel?.sendMessage("Bani @ ${author.effectiveName} por escrever o seguinte no canal do mal: ${message.contentRaw}")?.queue()
+                }
+
                 event.guild.ban(listOf(author), Duration.ofDays(1L)).queue{
                     event.guild.unban(author).queue()
                 }

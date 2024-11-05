@@ -23,6 +23,7 @@ class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
     override val propertiesEither = propertiesLoader.load("env/roleAwardModule.properties")
 
     var roleId: String? = null
+    var adminAwardRole: String? = null
     var threshold: Int = 99
     var emojiNames: String? = null
     var warningChannelId: String? = null
@@ -36,6 +37,7 @@ class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
             is Either.Left -> {}
             is Either.Right -> {
                 roleId = propertiesEither.value.getProperty("roleId")
+                adminAwardRole = propertiesEither.value.getProperty("adminAwardRole")
                 warningChannelId = propertiesEither.value.getProperty("warningChannelId")
                 emojiNames = propertiesEither.value.getProperty("emojiNames")
                 threshold = propertiesEither.value.getProperty("threshold")?.toInt() ?: 99
@@ -50,6 +52,7 @@ class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
                     JobDataMap().also {
                         it.put("jda", jda)
                         it.put("roleId", roleId)
+                        it.put("adminAwardRole", adminAwardRole)
                         it.put("warningChannelId", warningChannelId)
                     })
             }
@@ -72,7 +75,13 @@ class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
             if(count < threshold) return@queue //Not enough emojis
 
             val author = event.jda.getUserById(event.messageAuthorIdLong) ?: return@queue //User not found (probably left the server)
-            event.guild.addRoleToMember(author, role).queue()
+            val member = event.guild.getMemberById(author.idLong)
+            if( member?.roles?.any { it.position > role.position } == true ) {
+                val adminRole = event.guild.getRoleById(adminAwardRole?:return@queue) ?: return@queue // No role configured
+                event.guild.addRoleToMember(author, adminRole).queue()
+            } else {
+                event.guild.addRoleToMember(author, role).queue()
+            }
             val warningChannel = event.jda.getTextChannelById(warningChannelId?:"")
             warningChannel?.sendMessage(":lemon: Utilizador ${author.effectiveName} (@${author.name}) foi limonado (${message.jumpUrl}).")?.queue()
         }

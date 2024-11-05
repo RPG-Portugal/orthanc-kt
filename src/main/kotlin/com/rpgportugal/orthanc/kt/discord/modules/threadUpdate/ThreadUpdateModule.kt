@@ -30,19 +30,19 @@ class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
 
     override fun onChannelUpdateArchived(event: ChannelUpdateArchivedEvent) {
         doThreadChangedEvent(event){ thread ->
-            ":blue_book: Thread ${thread.name} (${thread.jumpUrl}) changed state to ${getArchiveState(event.oldValue==true, event.newValue==true)}"
+            ":blue_book: Thread ${thread.name} (${thread.jumpUrl}) mudou o estado para ${getArchiveState(event.oldValue==true, event.newValue==true)}"
         }
     }
 
     override fun onChannelCreate(event: ChannelCreateEvent) {
         doThreadChangedEvent(event){ thread ->
-            ":green_book: Thread ${thread.name} (${thread.jumpUrl}) was CREATED"
+            ":green_book: Thread ${thread.name} (${thread.jumpUrl}) foi CRIADO"
         }
     }
 
     override fun onChannelDelete(event: ChannelDeleteEvent) {
         doThreadChangedEvent(event){ thread ->
-            ":closed_book: Thread ${thread.name} (${thread.jumpUrl}) was DELETED"
+            ":closed_book: Thread ${thread.name} (${thread.jumpUrl}) foi APAGADO"
         }
     }
 
