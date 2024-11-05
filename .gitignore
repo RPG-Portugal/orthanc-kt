@@ -1,8 +1,12 @@
 # Created by https://www.toptal.com/developers/gitignore/api/java,kotlin,maven,gradle,intellij+all,visualstudiocode,emacs,vim
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,kotlin,maven,gradle,intellij+all,visualstudiocode,emacs,vim
 
-/src/main/resources/secret/*
-/src/main/resources/env/*
+/src/main/resources/dev/secret/*
+/src/main/resources/dev/env/*
+/src/main/resources/env.properties
+
+/src/main/resources/prd/*
+
 *.sqlite
 
 
