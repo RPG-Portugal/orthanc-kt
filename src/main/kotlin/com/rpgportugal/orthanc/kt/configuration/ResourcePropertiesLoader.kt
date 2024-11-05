@@ -40,7 +40,10 @@ class ResourcePropertiesLoader(private val classLoader: ClassLoader) : Propertie
     }
 
     fun loadFromBase(fileName: String, base: String = ""): Either<PropertiesLoadError, Properties> {
-        val path = "$base/$fileName"
+
+        val path =
+            if (base.isEmpty()) fileName else "$base/$fileName"
+
         return Either.catch {
             classLoader.getResourceAsStream(path)
         }.mapLeft {
