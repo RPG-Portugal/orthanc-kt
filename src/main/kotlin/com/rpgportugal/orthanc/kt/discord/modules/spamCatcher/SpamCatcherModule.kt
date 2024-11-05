@@ -88,7 +88,7 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
             if(regex?.matches(message.contentRaw) == true){
                 if(warningChannelId?.isNotEmpty() == true){
                     val warningChannel = event.jda.getTextChannelById(warningChannelId!!)
-                    warningChannel?.sendMessage("Bani @ ${author.effectiveName} por escrever o seguinte no canal do mal: ${message.contentRaw}")?.queue()
+                    warningChannel?.sendMessage(":x: Bani @ ${author.effectiveName} por escrever o seguinte no canal do mal: ${message.contentRaw}")?.queue()
                 }
 
                 event.guild.ban(listOf(author), Duration.ofDays(1L)).queue{
