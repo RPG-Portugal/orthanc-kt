@@ -1,9 +1,8 @@
 package com.rpgportugal.orthanc.kt.discord.module
 
 import arrow.core.Either
-import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
-import com.rpgportugal.orthanc.kt.error.PropertiesLoadError.MissingPropertyError
 import com.rpgportugal.orthanc.kt.error.PropertiesLoadError
+import com.rpgportugal.orthanc.kt.error.PropertiesLoadError.MissingPropertyError
 import com.rpgportugal.orthanc.kt.logging.Logging
 import com.rpgportugal.orthanc.kt.logging.log
 import net.dv8tion.jda.api.JDA
@@ -11,7 +10,7 @@ import org.koin.core.component.KoinComponent
 import java.util.*
 
 interface BotModule : Logging, KoinComponent {
-    val propertiesLoader: PropertiesLoader
+
     val propertiesEither: Either<PropertiesLoadError, Properties>
 
     fun getName(): String

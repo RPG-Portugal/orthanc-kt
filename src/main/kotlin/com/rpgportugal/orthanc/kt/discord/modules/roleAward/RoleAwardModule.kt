@@ -19,16 +19,16 @@ class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
     private val triggerName = "triggerEveryDayAt5AM"
     private val jobName = "roleCleanup"
 
-    override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
-    val scheduler: Scheduler by inject()
+    private val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
+    private val scheduler: Scheduler by inject()
     override val propertiesEither = propertiesLoader.load("env/roleAwardModule.properties")
 
-    var roleId: String? = null
-    var adminAwardRole: String? = null
-    var threshold: Int = 99
-    var emojiNames: String? = null
-    var warningChannelId: String? = null
-    var cron: String = "0 0 5 * * ? *"
+    private var roleId: String? = null
+    private var adminAwardRole: String? = null
+    private var threshold: Int = 99
+    private var emojiNames: String? = null
+    private var warningChannelId: String? = null
+    private var cron: String = "0 0 5 * * ? *"
 
     override fun getName(): String = "Role Award"
 

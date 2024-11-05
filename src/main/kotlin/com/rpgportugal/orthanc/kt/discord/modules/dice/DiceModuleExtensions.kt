@@ -7,7 +7,7 @@ fun ResultTree.prettyPrint(): String {
         is NDice -> {
             val nDice = this.expression as NDice
             if (nDice.numberOfDice > 1) {
-                this.results.map { it.prettyPrint() }.joinToString(", ") + " = ${this.value}"
+                this.results.joinToString(", ") { it.prettyPrint() } + " = ${this.value}"
             } else {
                 "[d${nDice.numberOfFaces}] ${this.value}"
             }
@@ -44,7 +44,7 @@ fun ResultTree.prettyPrint(): String {
             val fudgeExpr = this.expression as FudgeDice
             fudgeExpr.numberOfFaces
             if (this.results.isNotEmpty())
-                this.results.map { it.prettyPrint() }.joinToString(", ") + " = ${this.value}"
+                this.results.joinToString(", ") { it.prettyPrint() } + " = ${this.value}"
             else
                 "[dF] ${this.value}"
         }
@@ -57,7 +57,7 @@ fun ResultTree.prettyPrint(): String {
 
         else -> {
             if (this.results.isNotEmpty())
-                this.results.map { it.prettyPrint() }.joinToString(", ") + " = ${this.value}"
+                this.results.joinToString(", ") { it.prettyPrint() } + " = ${this.value}"
             else
                 "${this.value}"
         }

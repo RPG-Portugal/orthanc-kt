@@ -15,7 +15,7 @@ import org.koin.dsl.module
 import org.quartz.JobDataMap
 import java.time.Duration
 
-class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
+class SpamCatcherModule : ListenerAdapter(), BotModule, KoinComponent {
 
     companion object : DepModule {
         override val module = module {
@@ -27,15 +27,15 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
     private val triggerName = "sendWarnMessageTrigger"
     private val jobName = "sendWarnMessageJob"
 
-    override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
-    val scheduler: Scheduler by inject()
+    private val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
+    private val scheduler: Scheduler by inject()
     override val propertiesEither = propertiesLoader.load("env/spamCatcher.properties")
 
-    var linkRegex: String? = null
-    var honeypotChannelId: String? = null
-    var warningChannelId: String? = null
-    var cron: String = "0 */5 * * * ? *"
-    var regex: Regex? = null
+    private var linkRegex: String? = null
+    private var honeypotChannelId: String? = null
+    private var warningChannelId: String? = null
+    private var cron: String = "0 */5 * * * ? *"
+    private var regex: Regex? = null
 
     override fun getName(): String = "Spam Catcher"
 

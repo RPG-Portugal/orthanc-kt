@@ -7,6 +7,8 @@ import com.rpgportugal.orthanc.kt.error.PropertiesLoadError.NullInputStreamError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.application.db.SqlApplicationRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.emoji.db.SqlEmojiRepository
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.ktorm.database.Database
@@ -31,5 +33,6 @@ object DbModule : DepModule {
             Database.connect(url = url)
         }
         factory { SqlApplicationRepository(get()) } bind ApplicationRepository::class
+        factory { SqlEmojiRepository(get()) } bind EmojiRepository::class
     }
 }

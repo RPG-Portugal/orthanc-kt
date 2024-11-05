@@ -3,9 +3,13 @@ package com.rpgportugal.orthanc.kt.discord.modules.dice
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.dependencies.DepModule
+import com.rpgportugal.orthanc.kt.discord.emoji.EmojiKey
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
+import com.rpgportugal.orthanc.kt.error.DbError
 import com.rpgportugal.orthanc.kt.error.DiceModuleError
+import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.logging.log
+import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
 import dev.diceroll.parser.detailedRoll
 import dev.minn.jda.ktx.events.CoroutineEventListener
 import dev.minn.jda.ktx.events.onCommand
@@ -18,7 +22,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.dsl.bind
 import org.koin.dsl.module
 import kotlin.time.Duration.Companion.seconds
 
@@ -26,36 +29,34 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
 
     companion object : DepModule {
         override val module = module {
-            single { DiceModule() } bind BotModule::class
+            single { DiceModule() }
         }
     }
 
-    override val emojiRepository: EmojiRepository
-    override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
+    private val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
+
+    private val emojiRepository: EmojiRepository by inject<EmojiRepository>()
+
     override val propertiesEither = propertiesLoader.load("env/diceModule.properties")
 
-    var onRoll: CoroutineEventListener? = null
+    private var onRoll: CoroutineEventListener? = null
 
-    val diceMap = mutableMapOf<String, String>()
+    private lateinit var diceMap: Map<EmojiKey, String>
 
     override fun getName(): String = "Dice Roll"
 
     override fun attach(jda: JDA) {
 
-
-        when (propertiesEither) {
-            is Either.Left -> {}
-            is Either.Right -> {
-                val props = propertiesEither.value
-                diceMap["d20"] = props.getProperty("emojiIdD20")
-                log.warn("emojiIdD20: ${props.getProperty("emojiIdD20")}")
-                diceMap["d12"] = props.getProperty("emojiIdD12")
-                diceMap["d10"] = props.getProperty("emojiIdD10")
-                diceMap["d8"] = props.getProperty("emojiIdD8")
-                diceMap["d6"] = props.getProperty("emojiIdD6")
-                diceMap["d4"] = props.getProperty("emojiIdD4")
-                diceMap["d2"] = props.getProperty("emojiIdD2")
-                diceMap["dF"] = props.getProperty("emojiIdDF")
+        when (val emojis = emojiRepository.getEmojiKeyToDiscordCodeMap()) {
+            is Either.Right -> diceMap = emojis.value
+            is Either.Left -> {
+                log.error("Failed to get emojis: {}", emojis.value)
+                when (val err = emojis.value) {
+                    is DbError.EntityNotFoundError<*> ->
+                        throw Exception("${err.entityName} - ${err.id} - ${err.message}")
+                    is ThrowableError<*> ->
+                        throw err.exception
+                }
             }
         }
 
@@ -98,7 +99,7 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
 
     }
 
-    fun doRoll(formula: String, userName: String, jda: JDA, sendReply: (String) -> Unit) {
+    private fun doRoll(formula: String, userName: String, jda: JDA, sendReply: (String) -> Unit) {
         val rollResult = Either.catch {
             detailedRoll(formula)
         }.mapLeft {
@@ -117,7 +118,7 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
 
                 diceMap.mapValues {
                     val diceEmojiId = it.value
-                    val default = "[${it.key}]"
+                    val default = "[${it.key.diceName}]"
                     try {
                         val diceEmoji = jda.getEmojiById(diceEmojiId)
                         diceEmoji?.asMention ?: default
@@ -125,7 +126,7 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
                         default
                     }
                 }.forEach {
-                    prettyText = prettyText.replace("[${it.key}]", it.value)
+                    prettyText = prettyText.replace("[${it.key.diceName}]", it.value)
                 }
 
                 sendReply("O resultado é: $prettyText")

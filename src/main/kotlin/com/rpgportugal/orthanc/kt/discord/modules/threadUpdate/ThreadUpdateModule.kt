@@ -15,7 +15,8 @@ import org.koin.core.component.inject
 
 class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
 
-    override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
+    private val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
+
     override val propertiesEither = propertiesLoader.load("env/threadUpdateModule.properties")
 
     override fun getName(): String = "Thread Update"
@@ -63,7 +64,7 @@ class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
         warningChannel?.sendMessage(messageFn(thread))?.queue()
     }
 
-    fun getArchiveState(old: Boolean, new: Boolean): String {
+    private fun getArchiveState(old: Boolean, new: Boolean): String {
         return when {
             old && !new -> "UNARCHIVED"
             !old && new -> "ARCHIVED"
