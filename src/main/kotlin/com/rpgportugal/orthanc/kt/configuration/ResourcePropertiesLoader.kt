@@ -2,7 +2,6 @@ package com.rpgportugal.orthanc.kt.configuration
 
 import arrow.core.Either
 import arrow.core.flatMap
-import com.rpgportugal.orthanc.kt.error.NullInputStreamError
 import com.rpgportugal.orthanc.kt.error.PropertiesLoadError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import org.slf4j.Logger
@@ -22,17 +21,21 @@ class ResourcePropertiesLoader(private val classLoader: ClassLoader) : Propertie
         private fun getPropertiesBasePath(): String {
             val result =
                 ResourcePropertiesLoader(ClassLoader.getSystemClassLoader())
-                    .loadFromBase("", "env.properties")
+                    .loadFromBase("env.properties","")
 
             return when (result) {
                 is Either.Right -> result.value.getProperty("env","")
-                is Either.Left -> throw Exception(result.value.message)
+                is Either.Left -> when (val err = result.value) {
+                    is PropertiesLoadError.NullInputStreamError -> throw Exception("${err.fileName} - ${err.message}")
+                    is PropertiesLoadError.MissingPropertyError -> throw Exception("${err.propertyName} - ${err.message}")
+                    is ThrowableError<*> -> throw err.exception
+                }
             }
         }
     }
 
     fun loadFromBase(fileName: String, base: String = PROPERTIES_BASE): Either<PropertiesLoadError, Properties> {
-            val path = "$base/$fileName";
+            val path = "$base/$fileName"
             return Either.catch {
                 classLoader.getResourceAsStream(path)
             }.mapLeft {
@@ -47,11 +50,11 @@ class ResourcePropertiesLoader(private val classLoader: ClassLoader) : Propertie
                     }
                 } else {
                     LOG.error("Error while loading $path")
-                    Either.Left(NullInputStreamError(path, "File not found"))
+                    Either.Left(PropertiesLoadError.NullInputStreamError(path, "File not found"))
                 }
             }
         }
 
     override fun load(fileName: String): Either<PropertiesLoadError, Properties> =
-       loadFromBase(fileName=fileName)
+       loadFromBase(fileName)
 }

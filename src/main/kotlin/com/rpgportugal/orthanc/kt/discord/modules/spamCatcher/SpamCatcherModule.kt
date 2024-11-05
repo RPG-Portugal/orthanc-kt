@@ -4,13 +4,9 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.dependencies.DepModule
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
-import com.rpgportugal.orthanc.kt.discord.modules.roleAward.RoleAwardModule
-import com.rpgportugal.orthanc.kt.discord.modules.roleAward.RoleCleanupJob
 import com.rpgportugal.orthanc.kt.scheduling.Scheduler
 import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -18,10 +14,6 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.quartz.JobDataMap
 import java.time.Duration
-import java.time.temporal.ChronoUnit
-import java.util.concurrent.TimeUnit
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
 
 class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
 
@@ -37,7 +29,7 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
 
     override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
     val scheduler: Scheduler by inject()
-    override val propertiesEither = propertiesLoader.load("env/spamCatcher.properties")
+    override val propertiesEither = propertiesLoader.load("dev/env/spamCatcher.properties")
 
     var linkRegex: String? = null
     var honeypotChannelId: String? = null

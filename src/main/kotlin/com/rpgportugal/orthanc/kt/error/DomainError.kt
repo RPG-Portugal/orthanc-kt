@@ -11,19 +11,17 @@ data class ThrowableError<E: Throwable>(
 
 // Property Errors
 // Properties Load Errors
-sealed interface PropertiesLoadError : DomainError
+sealed interface PropertiesLoadError : DomainError {
+    data class NullInputStreamError(
+        val fileName: String,
+        override val message: String,
+    ) : PropertiesLoadError
 
-data class NullInputStreamError(
-    val fileName: String,
-    override val message: String,
-) : PropertiesLoadError
-
-// Property Value Errors
-sealed interface PropertyValueError : DomainError
-data class MissingPropertyError(
-    val propertyName: String,
-    override val message: String,
-) : PropertyValueError
+    data class MissingPropertyError(
+        val propertyName: String,
+        override val message: String,
+    ) : PropertiesLoadError
+}
 
 // Database Errors
 sealed interface DatabaseError : DomainError

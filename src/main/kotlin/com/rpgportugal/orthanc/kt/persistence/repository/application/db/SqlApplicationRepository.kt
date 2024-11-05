@@ -6,7 +6,6 @@ import com.rpgportugal.orthanc.kt.error.EntityNotFoundError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.persistence.dto.Application
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
-import org.koin.java.KoinJavaComponent.inject
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
 import org.ktorm.entity.find

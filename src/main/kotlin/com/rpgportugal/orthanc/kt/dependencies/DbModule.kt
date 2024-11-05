@@ -2,7 +2,6 @@ package com.rpgportugal.orthanc.kt.dependencies
 
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
-import com.rpgportugal.orthanc.kt.error.DatabaseError
 import com.rpgportugal.orthanc.kt.error.NullInputStreamError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
@@ -16,7 +15,7 @@ object DbModule : DepModule{
         factory {
             val propertiesLoader = get<PropertiesLoader>()
 
-            val dbProperties = when (val result = propertiesLoader.load("secret/database.properties")) {
+            val dbProperties = when (val result = propertiesLoader.load("dev/secret/database.properties")) {
                 is Either.Right -> result.value
                 is Either.Left -> when(val error = result.value) {
                     is ThrowableError<*> -> throw error.exception

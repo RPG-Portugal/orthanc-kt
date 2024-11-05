@@ -5,7 +5,6 @@ import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.dependencies.DepModule
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.logging.log
-import dev.diceroll.parser.ResultTree
 import dev.diceroll.parser.detailedRoll
 import dev.minn.jda.ktx.events.CoroutineEventListener
 import dev.minn.jda.ktx.events.onCommand
@@ -31,7 +30,7 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
     }
 
     override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
-    override val propertiesEither = propertiesLoader.load("env/diceModule.properties")
+    override val propertiesEither = propertiesLoader.load("dev/env/diceModule.properties")
 
     var onRoll : CoroutineEventListener? = null
 
