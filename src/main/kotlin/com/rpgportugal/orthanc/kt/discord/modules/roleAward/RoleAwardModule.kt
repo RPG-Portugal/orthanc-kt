@@ -21,7 +21,7 @@ class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
 
     override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
     val scheduler: Scheduler by inject()
-    override val propertiesEither = propertiesLoader.load("dev/env/roleAwardModule.properties")
+    override val propertiesEither = propertiesLoader.load("env/roleAwardModule.properties")
 
     var roleId: String? = null
     var adminAwardRole: String? = null

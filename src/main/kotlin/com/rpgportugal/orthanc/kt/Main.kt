@@ -31,7 +31,7 @@ class Main {
             val propertiesLoader = koin.get<PropertiesLoader>()
 
             val applicationProperties =
-                when (val result = propertiesLoader.load("dev/env/application.properties")) {
+                when (val result = propertiesLoader.load("env/application.properties")) {
                     is Either.Right -> result.value
                     is Either.Left -> {
                         val error = result.value
