@@ -29,26 +29,31 @@ class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
     }
 
     override fun onChannelUpdateArchived(event: ChannelUpdateArchivedEvent) {
-        doThreadChangedEvent(event){ thread ->
-            ":blue_book: Thread ${thread.name} (${thread.jumpUrl}) mudou o estado para ${getArchiveState(event.oldValue==true, event.newValue==true)}"
+        doThreadChangedEvent(event) { thread ->
+            ":blue_book: Thread ${thread.name} (${thread.jumpUrl}) mudou o estado para ${
+                getArchiveState(
+                    event.oldValue == true,
+                    event.newValue == true
+                )
+            }"
         }
     }
 
     override fun onChannelCreate(event: ChannelCreateEvent) {
-        doThreadChangedEvent(event){ thread ->
+        doThreadChangedEvent(event) { thread ->
             ":green_book: Thread ${thread.name} (${thread.jumpUrl}) foi CRIADO"
         }
     }
 
     override fun onChannelDelete(event: ChannelDeleteEvent) {
-        doThreadChangedEvent(event){ thread ->
+        doThreadChangedEvent(event) { thread ->
             ":closed_book: Thread ${thread.name} (${thread.jumpUrl}) foi APAGADO"
         }
     }
 
-    fun doThreadChangedEvent(event: GenericChannelEvent, messageFn: (thread:ThreadChannel) -> String) {
-        if(!event.channel.type.isThread) return // It's not a thread
-        val warningChannelId = when(propertiesEither){
+    fun doThreadChangedEvent(event: GenericChannelEvent, messageFn: (thread: ThreadChannel) -> String) {
+        if (!event.channel.type.isThread) return // It's not a thread
+        val warningChannelId = when (propertiesEither) {
             is Either.Left -> return // No warning channel defined.
             is Either.Right -> propertiesEither.value.getProperty("warningChannelId") ?: return
         }
@@ -58,8 +63,8 @@ class ThreadUpdateModule() : ListenerAdapter(), BotModule, KoinComponent {
         warningChannel?.sendMessage(messageFn(thread))?.queue()
     }
 
-    fun getArchiveState(old:Boolean, new:Boolean): String {
-        return when{
+    fun getArchiveState(old: Boolean, new: Boolean): String {
+        return when {
             old && !new -> "UNARCHIVED"
             !old && new -> "ARCHIVED"
             else -> "IMPOSSIBLE"

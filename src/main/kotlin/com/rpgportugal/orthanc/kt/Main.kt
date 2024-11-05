@@ -31,9 +31,9 @@ class Main {
             val propertiesLoader = koin.get<PropertiesLoader>()
 
             val applicationProperties =
-                when(val result = propertiesLoader.load("dev/env/application.properties")) {
+                when (val result = propertiesLoader.load("dev/env/application.properties")) {
                     is Either.Right -> result.value
-                    is Either.Left  -> {
+                    is Either.Left -> {
                         val error = result.value
                         LOG.error("Failed to load application.properties => {}", error.message)
                         when (error) {
@@ -54,7 +54,7 @@ class Main {
             val applicationRepository = koin.get<ApplicationRepository>()
 
             val application: Application =
-                when(val result = applicationRepository.getApplicationById(appId)) {
+                when (val result = applicationRepository.getApplicationById(appId)) {
                     is Either.Right -> result.value
                     is Either.Left -> {
                         val error = result.value
@@ -62,6 +62,7 @@ class Main {
                         when (error) {
                             is EntityNotFoundError<*> ->
                                 throw Exception("Entity ${error.entityName} with id = ${error.id} not found")
+
                             is ThrowableError<*> ->
                                 throw error.exception
                         }
@@ -71,7 +72,8 @@ class Main {
             val jda = createJDA(
                 token = application.token,
                 enableCoroutines = true,
-                intents = GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
+                intents = GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS)
+            )
 
             BotModuleLoader().loadModules(jda)
         }

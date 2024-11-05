@@ -32,14 +32,14 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
     override val propertiesLoader: PropertiesLoader by inject<PropertiesLoader>()
     override val propertiesEither = propertiesLoader.load("dev/env/diceModule.properties")
 
-    var onRoll : CoroutineEventListener? = null
+    var onRoll: CoroutineEventListener? = null
 
     val diceMap = mutableMapOf<String, String>()
 
     override fun getName(): String = "Dice Roll"
 
     override fun attach(jda: JDA) {
-        when(propertiesEither){
+        when (propertiesEither) {
             is Either.Left -> {}
             is Either.Right -> {
                 val props = propertiesEither.value
@@ -58,7 +58,7 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
         onRoll = jda.onCommand("roll", timeout = 2.seconds) { event ->
             val formula = event.getOption<String>("formula") ?: ""
 
-            doRoll(formula, event.user.effectiveName, jda){
+            doRoll(formula, event.user.effectiveName, jda) {
                 event.reply(it).queue()
             }
         }
@@ -81,20 +81,20 @@ class DiceModule : ListenerAdapter(), BotModule, KoinComponent {
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
         val message = event.message.contentStripped
-        if(!message.lowercase().startsWith("\$roll")) return
+        if (!message.lowercase().startsWith("\$roll")) return
 
         val messageTokens = message.split(" ")
-        if(messageTokens.size < 2) return
+        if (messageTokens.size < 2) return
 
         val formula = messageTokens.subList(1, messageTokens.size).joinToString(" ")
 
-        doRoll(formula, event.author.effectiveName, event.jda){
+        doRoll(formula, event.author.effectiveName, event.jda) {
             event.message.reply(it).queue()
         }
 
     }
 
-    fun doRoll (formula: String, userName: String, jda:JDA, sendReply: (String) -> Unit ) {
+    fun doRoll(formula: String, userName: String, jda: JDA, sendReply: (String) -> Unit) {
         val rollResult = Either.catch {
             detailedRoll(formula)
         }.mapLeft {

@@ -8,5 +8,5 @@ sealed interface DiceModuleError : DomainError
 
 data class DiceParsingError(
     val formula: String,
-    override val message: String
+    override val message: String,
 ) : DiceModuleError

@@ -8,7 +8,7 @@ import com.rpgportugal.orthanc.kt.logging.Logging
 import com.rpgportugal.orthanc.kt.logging.log
 import net.dv8tion.jda.api.JDA
 import org.koin.core.component.KoinComponent
-import java.util.Properties
+import java.util.*
 
 interface BotModule : Logging, KoinComponent {
     val propertiesLoader: PropertiesLoader
@@ -16,7 +16,7 @@ interface BotModule : Logging, KoinComponent {
 
     fun getName(): String
 
-    fun isEnabled():Boolean {
+    fun isEnabled(): Boolean {
         return when (propertiesEither) {
             is Either.Left -> false
             is Either.Right -> {
@@ -30,6 +30,7 @@ interface BotModule : Logging, KoinComponent {
                         log.error("Missing property ${enabledProperty.value.propertyName}.")
                         false
                     }
+
                     is Either.Right -> enabledProperty.value == "true"
                 }
             }

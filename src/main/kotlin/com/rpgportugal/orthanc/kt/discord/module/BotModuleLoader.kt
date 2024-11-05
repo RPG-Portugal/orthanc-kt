@@ -9,11 +9,11 @@ class BotModuleLoader : KoinComponent, Logging {
 
     val botModules: List<BotModule> = getKoin().getAll()
 
-    fun loadModules( jda: JDA) {
+    fun loadModules(jda: JDA) {
         botModules.forEach { botModule ->
             val name = botModule.getName()
             log.info("===== Loading Module $name")
-            if(!botModule.isEnabled()) {
+            if (!botModule.isEnabled()) {
                 log.info("Module $name is disabled")
                 return@forEach
             }

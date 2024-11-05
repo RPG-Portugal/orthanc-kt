@@ -11,9 +11,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.quartz.JobDataMap
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
-import java.time.temporal.ChronoUnit
 
 class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
 
@@ -68,28 +66,35 @@ class RoleAwardModule() : ListenerAdapter(), BotModule, KoinComponent {
 
     override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
         if (emojiNames?.split("|")?.any {
-            if(event.emoji.type == Emoji.Type.UNICODE) { event.emoji.asUnicode().asCodepoints == it } else { event.emoji.name.lowercase() == it.lowercase() }
-        } == false) return // Not the emoji we're looking for
-        val role = event.guild.getRoleById(roleId?:return) ?: return // No role configured
+                if (event.emoji.type == Emoji.Type.UNICODE) {
+                    event.emoji.asUnicode().asCodepoints == it
+                } else {
+                    event.emoji.name.lowercase() == it.lowercase()
+                }
+            } == false) return // Not the emoji we're looking for
+        val role = event.guild.getRoleById(roleId ?: return) ?: return // No role configured
 
         event.retrieveMessage().queue { message ->
 
             val startOfDay = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0)
-            if(message.timeCreated.isBefore(startOfDay)) return@queue
+            if (message.timeCreated.isBefore(startOfDay)) return@queue
 
             val count = message.getReaction(event.emoji)?.count ?: 0
-            if(count < threshold) return@queue //Not enough emojis
+            if (count < threshold) return@queue //Not enough emojis
 
-            val author = event.jda.getUserById(event.messageAuthorIdLong) ?: return@queue //User not found (probably left the server)
+            val author = event.jda.getUserById(event.messageAuthorIdLong)
+                ?: return@queue //User not found (probably left the server)
             val member = event.guild.getMemberById(author.idLong)
-            if( member?.roles?.any { it.position > role.position } == true ) {
-                val adminRole = event.guild.getRoleById(adminAwardRole?:return@queue) ?: return@queue // No role configured
+            if (member?.roles?.any { it.position > role.position } == true) {
+                val adminRole =
+                    event.guild.getRoleById(adminAwardRole ?: return@queue) ?: return@queue // No role configured
                 event.guild.addRoleToMember(author, adminRole).queue()
             } else {
                 event.guild.addRoleToMember(author, role).queue()
             }
-            val warningChannel = event.jda.getTextChannelById(warningChannelId?:"")
-            warningChannel?.sendMessage(":lemon: Utilizador ${author.effectiveName} (@${author.name}) foi limonado (${message.jumpUrl}).")?.queue()
+            val warningChannel = event.jda.getTextChannelById(warningChannelId ?: "")
+            warningChannel?.sendMessage(":lemon: Utilizador ${author.effectiveName} (@${author.name}) foi limonado (${message.jumpUrl}).")
+                ?.queue()
         }
     }
 }

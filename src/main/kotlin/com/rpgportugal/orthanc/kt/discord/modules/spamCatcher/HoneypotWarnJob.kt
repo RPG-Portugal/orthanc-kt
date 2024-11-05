@@ -12,6 +12,7 @@ class HoneypotWarnJob : Job, Logging {
         val honeypotChannelId = jobDataMap.getString("honeypotChannelId") ?: return
 
         val honeypotChannel = jda.getTextChannelById(honeypotChannelId)
-        honeypotChannel?.sendMessage("**NÃO ESCREVAM NESTE CANAL** Escrita neste canal resulta num soft ban! Isto é um canal anti-bots, mutem o canal por favor!")?.queue()
+        honeypotChannel?.sendMessage("**NÃO ESCREVAM NESTE CANAL** Escrita neste canal resulta num soft ban! Isto é um canal anti-bots, mutem o canal por favor!")
+            ?.queue()
     }
 }

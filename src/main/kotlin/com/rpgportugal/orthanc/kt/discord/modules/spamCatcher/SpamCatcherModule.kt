@@ -17,7 +17,7 @@ import java.time.Duration
 
 class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
 
-    companion object : DepModule{
+    companion object : DepModule {
         override val module = module {
             single { SpamCatcherModule() } bind BotModule::class
         }
@@ -35,7 +35,7 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
     var honeypotChannelId: String? = null
     var warningChannelId: String? = null
     var cron: String = "0 */5 * * * ? *"
-    var regex : Regex? = null
+    var regex: Regex? = null
 
     override fun getName(): String = "Spam Catcher"
 
@@ -48,7 +48,11 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
                 honeypotChannelId = propertiesEither.value.getProperty("honeypotChannelId")
                 warningChannelId = propertiesEither.value.getProperty("warningChannelId")
                 cron = propertiesEither.value.getProperty("cron") ?: "0 */5 * * * ? *"
-                regex = if(linkRegex?.isNotBlank() == true) { linkRegex!!.toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE)) } else { null }
+                regex = if (linkRegex?.isNotBlank() == true) {
+                    linkRegex!!.toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))
+                } else {
+                    null
+                }
                 scheduler.simpleCronJobSchedule(
                     jobName,
                     triggerName,
@@ -71,19 +75,20 @@ class SpamCatcherModule() : ListenerAdapter(), BotModule, KoinComponent {
         val author = event.author
         val message = event.message
 
-        if(honeypotChannelId?.isBlank() != false) return
-        if(author.isBot) return
+        if (honeypotChannelId?.isBlank() != false) return
+        if (author.isBot) return
 
-        if(message.channel.id == honeypotChannelId) {
+        if (message.channel.id == honeypotChannelId) {
             message.delete().queue()
 
-            if(regex?.matches(message.contentRaw) == true){
-                if(warningChannelId?.isNotEmpty() == true){
+            if (regex?.matches(message.contentRaw) == true) {
+                if (warningChannelId?.isNotEmpty() == true) {
                     val warningChannel = event.jda.getTextChannelById(warningChannelId!!)
-                    warningChannel?.sendMessage(":x: Bani @ ${author.effectiveName} por escrever o seguinte no canal do mal: ${message.contentRaw}")?.queue()
+                    warningChannel?.sendMessage(":x: Bani @ ${author.effectiveName} por escrever o seguinte no canal do mal: ${message.contentRaw}")
+                        ?.queue()
                 }
 
-                event.guild.ban(listOf(author), Duration.ofDays(1L)).queue{
+                event.guild.ban(listOf(author), Duration.ofDays(1L)).queue {
                     event.guild.unban(author).queue()
                 }
             }
