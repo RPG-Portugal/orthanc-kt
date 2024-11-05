@@ -14,24 +14,44 @@ class ResourcePropertiesLoader(private val classLoader: ClassLoader) : Propertie
     companion object {
         @JvmStatic
         val LOG: Logger = LoggerFactory.getLogger(ResourcePropertiesLoader::class.java)
-    }
 
-    override fun load(fileName: String): Either<PropertiesLoadError, Properties> =
-        Either.catch {
-            classLoader.getResourceAsStream(fileName)
-        }.mapLeft {
-            LOG.error("Error while loading $fileName", it)
-            ThrowableError(it)
-        }.flatMap { stream ->
-            if (stream != null) {
-                stream.use {
-                    val p = Properties()
-                    p.load(it)
-                    Either.Right(p)
-                }
-            } else {
-                LOG.error("Error while loading $fileName")
-                Either.Left(NullInputStreamError(fileName, "File not found"))
+        @JvmStatic
+        val PROPERTIES_BASE: String = getPropertiesBasePath()
+
+        @JvmStatic
+        private fun getPropertiesBasePath(): String {
+            val result =
+                ResourcePropertiesLoader(ClassLoader.getSystemClassLoader())
+                    .loadFromBase("", "env.properties")
+
+            return when (result) {
+                is Either.Right -> result.value.getProperty("env","")
+                is Either.Left -> throw Exception(result.value.message)
             }
         }
+    }
+
+    fun loadFromBase(fileName: String, base: String = PROPERTIES_BASE): Either<PropertiesLoadError, Properties> {
+            val path = "$base/$fileName";
+            return Either.catch {
+                classLoader.getResourceAsStream(path)
+            }.mapLeft {
+                LOG.error("Error while loading $path", it)
+                ThrowableError(it)
+            }.flatMap { stream ->
+                if (stream != null) {
+                    stream.use {
+                        val p = Properties()
+                        p.load(it)
+                        Either.Right(p)
+                    }
+                } else {
+                    LOG.error("Error while loading $path")
+                    Either.Left(NullInputStreamError(path, "File not found"))
+                }
+            }
+        }
+
+    override fun load(fileName: String): Either<PropertiesLoadError, Properties> =
+       loadFromBase(fileName=fileName)
 }
