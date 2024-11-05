@@ -1,7 +1,7 @@
 package com.rpgportugal.orthanc.kt.persistence.repository.application.db
 
 import arrow.core.Either
-import com.rpgportugal.orthanc.kt.error.DatabaseError
+import com.rpgportugal.orthanc.kt.error.DbError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.persistence.dto.Application
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
@@ -19,7 +19,7 @@ class SqlApplicationRepository(private val database: Database) : ApplicationRepo
         val LOG: Logger = LoggerFactory.getLogger(SqlApplicationRepository::class.java)
     }
 
-    override fun getApplicationById(id: Long): Either<DatabaseError, Application> {
+    override fun getApplicationById(id: Long): Either<DbError, Application> {
         return try {
             val application =
                 database
@@ -31,7 +31,7 @@ class SqlApplicationRepository(private val database: Database) : ApplicationRepo
             } else {
                 LOG.error("Failed to find application with id = {}", id)
                 Either.Left(
-                    DatabaseError.EntityNotFoundError(
+                    DbError.EntityNotFoundError(
                         Applications.tableName,
                         id,
                         "Failed to find application with id = $id"
