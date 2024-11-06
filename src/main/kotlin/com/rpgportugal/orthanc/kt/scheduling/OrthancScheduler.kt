@@ -8,7 +8,7 @@ import org.quartz.impl.StdSchedulerFactory
 import java.util.*
 
 class OrthancScheduler : Scheduler {
-    val quartzScheduler = StdSchedulerFactory().scheduler
+    private val quartzScheduler = StdSchedulerFactory().scheduler
 
     init {
         quartzScheduler.start()
