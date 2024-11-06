@@ -4,7 +4,8 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.discord.ArchiveState
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
-import net.dv8tion.jda.api.JDA
+import com.rpgportugal.orthanc.kt.error.DomainError
+import com.rpgportugal.orthanc.kt.util.TryCloseable
 import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel
 import net.dv8tion.jda.api.events.channel.ChannelCreateEvent
 import net.dv8tion.jda.api.events.channel.ChannelDeleteEvent
@@ -15,17 +16,19 @@ import org.koin.core.component.KoinComponent
 
 class ThreadUpdateModule(propertiesLoader: PropertiesLoader) : ListenerAdapter(), BotModule, KoinComponent {
 
-    override val propertiesEither = propertiesLoader.load("env/threadUpdateModule.properties")
 
     override fun getName(): String = "Thread Update"
-
-    override fun attach(jda: JDA) {
-        jda.addEventListener(this)
+    override fun start(): Either<DomainError, TryCloseable> {
+        TODO("Not yet implemented")
     }
 
-    override fun detach(jda: JDA) {
-        jda.removeEventListener(this)
-    }
+//    override fun attach(jda: JDA) {
+//        jda.addEventListener(this)
+//    }
+
+//    override fun detach(jda: JDA) {
+//        jda.removeEventListener(this)
+//    }
 
     override fun onChannelUpdateArchived(event: ChannelUpdateArchivedEvent) {
         doThreadChangedEvent(event) { thread ->
@@ -50,10 +53,8 @@ class ThreadUpdateModule(propertiesLoader: PropertiesLoader) : ListenerAdapter()
 
     private fun doThreadChangedEvent(event: GenericChannelEvent, messageFn: (thread: ThreadChannel) -> String) {
         if (!event.channel.type.isThread) return // It's not a thread
-        val warningChannelId = when (propertiesEither) {
-            is Either.Left -> return // No warning channel defined.
-            is Either.Right -> propertiesEither.value.getProperty("warningChannelId") ?: return
-        }
+
+        val warningChannelId: Long = TODO()
         val warningChannel = event.jda.getTextChannelById(warningChannelId)
         val thread = event.channel.asThreadChannel()
 

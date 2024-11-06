@@ -1,5 +1,6 @@
 package com.rpgportugal.orthanc.kt.persistence.dto.job
 
+import com.rpgportugal.orthanc.kt.persistence.dto.emoji.Emoji
 import org.ktorm.entity.Entity
 
 interface RoleAwardConfiguration : Entity<RoleAwardConfiguration> {
@@ -9,5 +10,6 @@ interface RoleAwardConfiguration : Entity<RoleAwardConfiguration> {
     val adminAwardRole: Long
     val threshold: Long
     val warningChannelId: Long
-
+    val jobConfiguration : JobConfiguration
+    val emojiKey: Emoji
 }

@@ -4,6 +4,8 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.error.PropertiesLoadError.NullInputStreamError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
+import com.rpgportugal.orthanc.kt.logging.Logging
+import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.application.db.SqlApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
@@ -12,7 +14,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.ktorm.database.Database
 
-object DbModule : DepModule {
+object DbModule : DepModule, Logging {
     override val module = module {
         factory {
             val propertiesLoader = get<PropertiesLoader>()

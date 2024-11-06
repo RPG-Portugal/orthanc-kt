@@ -1,26 +1,28 @@
 package com.rpgportugal.orthanc.kt.discord.modules.roleAward
 
+import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
+import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.scheduling.Scheduler
-import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.entities.emoji.Emoji
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
+import com.rpgportugal.orthanc.kt.util.TryCloseable
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import org.quartz.JobDataMap
-import java.time.OffsetDateTime
 
 class RoleAwardModule(
     propertiesLoader: PropertiesLoader,
     private val scheduler: Scheduler,
 ) : ListenerAdapter(), BotModule {
 
-//    private val schedulerGroupName = "RoleAward"
+
+    //    private val schedulerGroupName = "RoleAward"
 //    private val triggerName = "triggerEveryDayAt5AM"
 //    private val jobName = "roleCleanup"
 //    private var cron: String = "0 0 5 * * ? *"
-
+    /*
     override fun getName(): String = "Role Award"
+    override fun start(): Either<DomainError, TryCloseable> {
+        TODO("Not yet implemented")
+    }
 
 
     override fun attach(jda: JDA) {
@@ -75,5 +77,13 @@ class RoleAwardModule(
             warningChannel?.sendMessage(":lemon: Utilizador ${author.effectiveName} (@${author.name}) foi limonado (${message.jumpUrl}).")
                 ?.queue()
         }
+    }*/
+    override fun getName(): String {
+        TODO("Not yet implemented")
+    }
+
+    override fun start(): Either<DomainError, TryCloseable> {
+        TODO("Not yet implemented")
     }
 }
+
