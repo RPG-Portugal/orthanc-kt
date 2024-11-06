@@ -20,10 +20,12 @@ object DbModule : DepModule {
 
             val dbProperties = when (val result = propertiesLoader.load("secret/database.properties")) {
                 is Either.Right -> result.value
-                is Either.Left -> when (val error = result.value) {
-                    is ThrowableError<*> -> throw error.exception
-                    is NullInputStreamError -> throw Exception("${error.fileName} not found - ${error.message}")
-                    is PropertiesLoadError.MissingPropertyError -> throw Exception("property ${error.propertyName} not found")
+                is Either.Left -> {
+                    log.error("Failed to load from app.properties.example - {}", result.value)
+                    when (val error = result.value) {
+                        is NullInputStreamError -> throw Exception("${error.fileName} not found - ${error.message}")
+                        is ThrowableError<*> -> throw error.exception
+                    }
                 }
             }
 
