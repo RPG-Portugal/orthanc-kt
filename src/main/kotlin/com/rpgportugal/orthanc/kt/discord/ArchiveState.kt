@@ -5,5 +5,5 @@ enum class ArchiveState {
     Archived,
     Impossible;
 
-    override fun toString() = name.lowercase()
+    override fun toString() = name.uppercase()
 }
