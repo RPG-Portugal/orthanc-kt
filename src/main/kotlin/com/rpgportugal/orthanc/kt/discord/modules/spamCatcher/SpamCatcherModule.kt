@@ -27,14 +27,7 @@ class SpamCatcherModule(
     private val schedulerGroupName = "SpamCatcher"
     private val triggerName = "sendWarnMessageTrigger"
     private val jobName = "sendWarnMessageJob"
-
-    override val propertiesEither = propertiesLoader.load("env/spamCatcher.properties")
-
-    private var linkRegex: String? = null
-    private var honeypotChannelId: String? = null
-    private var warningChannelId: String? = null
-    private var cron: String = "0 */5 * * * ? *"
-    private var regex: Regex? = null
+    
 
     override fun getName(): String = "Spam Catcher"
 
