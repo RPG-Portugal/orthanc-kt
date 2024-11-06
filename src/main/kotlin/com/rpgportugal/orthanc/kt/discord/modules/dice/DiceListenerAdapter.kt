@@ -1,7 +1,7 @@
 package com.rpgportugal.orthanc.kt.discord.modules.dice
 
 import arrow.core.Either
-import com.rpgportugal.orthanc.kt.discord.CloseableListenerAdapter
+import com.rpgportugal.orthanc.kt.discord.listener.CloseableListenerAdapter
 import com.rpgportugal.orthanc.kt.error.DiceModuleError
 import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.logging.Logging

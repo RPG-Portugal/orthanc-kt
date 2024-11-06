@@ -1,6 +1,6 @@
 package com.rpgportugal.orthanc.kt.discord.modules.roleAward
 
-import com.rpgportugal.orthanc.kt.discord.CloseableListenerAdapter
+import com.rpgportugal.orthanc.kt.discord.listener.CloseableListenerAdapter
 import com.rpgportugal.orthanc.kt.error.DomainError
 
 class RoleAwardListenerAdapter(
