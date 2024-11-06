@@ -4,7 +4,9 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.discord.listener.CloseableListenerAdapter
 import com.rpgportugal.orthanc.kt.error.DiceModuleError
 import com.rpgportugal.orthanc.kt.error.DomainError
+import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.logging.Logging
+import com.rpgportugal.orthanc.kt.logging.log
 import dev.diceroll.parser.*
 import dev.minn.jda.ktx.events.onCommand
 import dev.minn.jda.ktx.interactions.components.getOption
@@ -17,6 +19,10 @@ class DiceListenerAdapter(
     private val diceMap: Map<String, String>,
 ) : CloseableListenerAdapter(), Logging {
 
+    init {
+        jda.addEventListener(this)
+    }
+
     private val onRoll = jda.onCommand("roll", timeout = 2.seconds) { event ->
         val formula = event.getOption<String>("formula") ?: ""
 
@@ -26,8 +32,14 @@ class DiceListenerAdapter(
     }
 
     override fun tryClose(): DomainError? {
-        onRoll.cancel()
-        return null
+        try {
+            jda.removeEventListener(this)
+            onRoll.cancel()
+            return null
+        } catch (exception: Exception) {
+            log.error("tryClose - failed to close",exception)
+            return ThrowableError(exception)
+        }
     }
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
@@ -80,7 +92,7 @@ class DiceListenerAdapter(
         }
     }
 
-    fun ResultTree.prettyPrint(): String {
+    private fun ResultTree.prettyPrint(): String {
         return when (this.expression) {
             is NDice -> {
                 val nDice = this.expression as NDice

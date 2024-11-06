@@ -31,7 +31,6 @@ class DiceModule(
             }
 
             val listenerAdapter = DiceListenerAdapter(jda, emojis)
-            jda.addEventListener(listenerAdapter)
 
             jda.updateCommands {
                 slash("roll", "rola todos os dados") {
