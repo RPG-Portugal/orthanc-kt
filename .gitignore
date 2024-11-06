@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,kotlin,maven,gradle,intellij+all,visualstudiocode,emacs,vim
 
 /src/main/resources/app.properties
-/src/main/resources/secret/
+/src/main/resources/db/
 app.properties
 
 
