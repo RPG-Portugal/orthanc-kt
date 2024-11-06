@@ -15,8 +15,8 @@ import java.time.Duration
 
 class SpamCatcherModule(
     propertiesLoader: PropertiesLoader,
-    private val scheduler: Scheduler
-) : ListenerAdapter(), BotModule{
+    private val scheduler: Scheduler,
+) : ListenerAdapter(), BotModule {
 
     companion object : DepModule {
         override val module = module {

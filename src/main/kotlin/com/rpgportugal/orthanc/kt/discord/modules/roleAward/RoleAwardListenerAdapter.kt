@@ -8,9 +8,8 @@ class RoleAwardListenerAdapter(
     val adminAwardRole: Long,
     val threshold: Long,
     val warningChannelId: Long,
-    val emojiNames: List<String>
+    val emojiNames: List<String>,
 ) : CloseableListenerAdapter() {
-
 
 
     override fun tryClose(): DomainError? {

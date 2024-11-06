@@ -7,6 +7,6 @@ interface JobConfiguration : Entity<JobConfiguration> {
 
     val schedulerGroupName: String
     val triggerName: String
-    val jobName : String
-    val cronExpression : String
+    val jobName: String
+    val cronExpression: String
 }

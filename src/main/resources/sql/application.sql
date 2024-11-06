@@ -1,8 +1,8 @@
 create table application
 (
-    id integer null on conflict rollback
+    id    integer null on conflict rollback
         constraint application_pk
             primary key,
-    token TEXT not null
+    token TEXT    not null
 );
 

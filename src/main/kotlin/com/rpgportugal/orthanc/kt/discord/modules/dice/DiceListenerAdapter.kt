@@ -14,7 +14,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class DiceListenerAdapter(
     private val jda: JDA,
-    private val diceMap: Map<String, String>
+    private val diceMap: Map<String, String>,
 ) : CloseableListenerAdapter(), Logging {
 
     private val onRoll = jda.onCommand("roll", timeout = 2.seconds) { event ->
@@ -152,7 +152,11 @@ class DiceListenerAdapter(
         return prettyPrintKeepDice(kDice.numberToKeep, resultTree, sortedResults)
     }
 
-    private fun prettyPrintKeepDice(numberToKeep: Int, resultTree: ResultTree, sortedResults: List<ResultTree>): String {
+    private fun prettyPrintKeepDice(
+        numberToKeep: Int,
+        resultTree: ResultTree,
+        sortedResults: List<ResultTree>,
+    ): String {
         val survivors = sortedResults.takeLast(numberToKeep)
         val failures = sortedResults.filter { !survivors.contains(it) }
 

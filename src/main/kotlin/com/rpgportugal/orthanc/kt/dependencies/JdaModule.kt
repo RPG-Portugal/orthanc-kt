@@ -31,6 +31,7 @@ object JdaModule : DepModule, Logging {
                             is ThrowableError<*> -> throw error.exception
                             is PropertiesLoadError.NullInputStreamError ->
                                 throw Exception("Failed to retrieve ${error.fileName}")
+
                             is PropertiesLoadError.MissingPropertyError ->
                                 throw Exception("Failed to retrieve property ${error.propertyName}")
                         }

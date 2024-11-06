@@ -1,6 +1,5 @@
 package com.rpgportugal.orthanc.kt.discord.modules.roleAward
 
-import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.scheduling.Scheduler
@@ -13,7 +12,7 @@ import java.time.OffsetDateTime
 
 class RoleAwardModule(
     propertiesLoader: PropertiesLoader,
-    private val scheduler: Scheduler
+    private val scheduler: Scheduler,
 ) : ListenerAdapter(), BotModule {
 
 //    private val schedulerGroupName = "RoleAward"

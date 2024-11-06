@@ -11,7 +11,7 @@ import org.ktorm.entity.map
 import org.ktorm.entity.sequenceOf
 
 class SqlEmojiRepository(private val database: Database) : Logging, EmojiRepository {
-    override fun getEmojiKeyToDiscordCodeMap(): Either<DbError,Map<String, String>> =
+    override fun getEmojiKeyToDiscordCodeMap(): Either<DbError, Map<String, String>> =
         try {
             val result =
                 database.sequenceOf(Emojis)
@@ -19,7 +19,7 @@ class SqlEmojiRepository(private val database: Database) : Logging, EmojiReposit
                     .toMap()
 
             Either.Right(result)
-        }catch (e : Exception) {
+        } catch (e: Exception) {
             log.error("Error getting emoji from repository", e)
             Either.Left(ThrowableError(e))
         }

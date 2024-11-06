@@ -8,5 +8,5 @@ import org.koin.core.component.KoinComponent
 
 interface BotModule : Logging, KoinComponent {
     fun getName(): String
-    fun start() : Either<DomainError,TryCloseable>
+    fun start(): Either<DomainError, TryCloseable>
 }

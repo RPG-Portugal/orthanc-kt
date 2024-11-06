@@ -6,7 +6,7 @@ import com.rpgportugal.orthanc.kt.util.TryCloseable
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 
-abstract class CloseableListener(private val jda: JDA): ListenerAdapter(), TryCloseable {
+abstract class CloseableListener(private val jda: JDA) : ListenerAdapter(), TryCloseable {
     final override fun tryClose(): DomainError? {
         try {
             jda.removeEventListener(this)
