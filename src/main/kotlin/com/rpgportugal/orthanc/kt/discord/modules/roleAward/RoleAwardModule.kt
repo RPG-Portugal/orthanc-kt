@@ -16,47 +16,28 @@ class RoleAwardModule(
     private val scheduler: Scheduler
 ) : ListenerAdapter(), BotModule {
 
-    private val schedulerGroupName = "RoleAward"
-    private val triggerName = "triggerEveryDayAt5AM"
-    private val jobName = "roleCleanup"
-
-    override val propertiesEither = propertiesLoader.load("env/roleAwardModule.properties")
-
-    private var roleId: String? = null
-    private var adminAwardRole: String? = null
-    private var threshold: Int = 99
-    private var emojiNames: String? = null
-    private var warningChannelId: String? = null
-    private var cron: String = "0 0 5 * * ? *"
+//    private val schedulerGroupName = "RoleAward"
+//    private val triggerName = "triggerEveryDayAt5AM"
+//    private val jobName = "roleCleanup"
+//    private var cron: String = "0 0 5 * * ? *"
 
     override fun getName(): String = "Role Award"
 
+
     override fun attach(jda: JDA) {
         jda.addEventListener(this)
-        when (propertiesEither) {
-            is Either.Left -> {}
-            is Either.Right -> {
-                roleId = propertiesEither.value.getProperty("roleId")
-                adminAwardRole = propertiesEither.value.getProperty("adminAwardRole")
-                warningChannelId = propertiesEither.value.getProperty("warningChannelId")
-                emojiNames = propertiesEither.value.getProperty("emojiNames")
-                threshold = propertiesEither.value.getProperty("threshold")?.toInt() ?: 99
-                cron = propertiesEither.value.getProperty("cron") ?: "0 0 5 * * ? *"
-
-                scheduler.simpleCronJobSchedule(
-                    jobName,
-                    triggerName,
-                    schedulerGroupName,
-                    cron,
-                    RoleCleanupJob::class.java,
-                    JobDataMap().also {
-                        it.put("jda", jda)
-                        it.put("roleId", roleId)
-                        it.put("adminAwardRole", adminAwardRole)
-                        it.put("warningChannelId", warningChannelId)
-                    })
-            }
-        }
+        scheduler.simpleCronJobSchedule(
+            jobName,
+            triggerName,
+            schedulerGroupName,
+            cron,
+            RoleCleanupJob::class.java,
+            JobDataMap().also {
+                it.put("jda", jda)
+                it.put("roleId", roleId)
+                it.put("adminAwardRole", adminAwardRole)
+                it.put("warningChannelId", warningChannelId)
+            })
     }
 
     override fun detach(jda: JDA) {

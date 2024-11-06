@@ -9,9 +9,9 @@ class RoleCleanupJob : Job, Logging {
     override fun execute(context: JobExecutionContext?) {
         val jobDataMap = context?.jobDetail?.jobDataMap
         val jda = (jobDataMap?.get("jda") ?: return) as JDA
-        val roleId = jobDataMap.getString("roleId") ?: return
-        val adminAwardRole = jobDataMap.getString("adminAwardRole")
-        val warningChannelId = jobDataMap.getString("warningChannelId") ?: return
+        val roleId = jobDataMap.getLong("roleId") ?: return
+        val adminAwardRole = jobDataMap.getLong("adminAwardRole")
+        val warningChannelId = jobDataMap.getLong("warningChannelId") ?: return
         val warningChannel = jda.getTextChannelById(warningChannelId)
 
         jda.guilds.forEach { guild ->

@@ -1,0 +1,2 @@
+app.id=1 #Long - apple database identifier
+app.db.url #String - jdbc path to sql database

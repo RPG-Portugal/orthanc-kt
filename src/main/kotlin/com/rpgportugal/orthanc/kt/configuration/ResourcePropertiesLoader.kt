@@ -4,42 +4,15 @@ import arrow.core.Either
 import arrow.core.flatMap
 import com.rpgportugal.orthanc.kt.error.PropertiesLoadError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import com.rpgportugal.orthanc.kt.logging.Logging
+import com.rpgportugal.orthanc.kt.logging.log
 import java.util.*
 
 class ResourcePropertiesLoader(private val classLoader: ClassLoader) : PropertiesLoader {
 
-    companion object {
-        @JvmStatic
-        val LOG: Logger = LoggerFactory.getLogger(ResourcePropertiesLoader::class.java)
+    companion object : Logging
 
-        @JvmStatic
-        val PROPERTIES_BASE: String = getPropertiesBasePath()
-
-        @JvmStatic
-        private fun getPropertiesBasePath(): String {
-            val result =
-                ResourcePropertiesLoader(ClassLoader.getSystemClassLoader())
-                    .loadFromBase("env.properties")
-
-            return when (result) {
-                is Either.Right -> result.value.getProperty("env", "")
-                is Either.Left -> when (val err = result.value) {
-                    is PropertiesLoadError.NullInputStreamError ->
-                        throw Exception("${err.fileName} - ${err.message}")
-
-                    is PropertiesLoadError.MissingPropertyError ->
-                        throw Exception("${err.propertyName} - ${err.message}")
-
-                    is ThrowableError<*> ->
-                        throw err.exception
-                }
-            }
-        }
-    }
-
-    fun loadFromBase(fileName: String, base: String = ""): Either<PropertiesLoadError, Properties> {
+    private fun loadFromBase(fileName: String, base: String = ""): Either<PropertiesLoadError, Properties> {
 
         val path =
             if (base.isEmpty()) fileName else "$base/$fileName"
@@ -47,7 +20,7 @@ class ResourcePropertiesLoader(private val classLoader: ClassLoader) : Propertie
         return Either.catch {
             classLoader.getResourceAsStream(path)
         }.mapLeft {
-            LOG.error("Error while loading $path", it)
+            log.error("Error while loading $path", it)
             ThrowableError(it)
         }.flatMap { stream ->
             if (stream != null) {
@@ -57,12 +30,12 @@ class ResourcePropertiesLoader(private val classLoader: ClassLoader) : Propertie
                     Either.Right(p)
                 }
             } else {
-                LOG.error("Error while loading $path")
+                log.error("Error while loading $path")
                 Either.Left(PropertiesLoadError.NullInputStreamError(path, "File not found"))
             }
         }
     }
 
     override fun load(fileName: String): Either<PropertiesLoadError, Properties> =
-        loadFromBase(fileName, PROPERTIES_BASE)
+        loadFromBase(fileName)
 }

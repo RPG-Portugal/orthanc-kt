@@ -1,12 +1,11 @@
 package com.rpgportugal.orthanc.kt.persistence.repository.emoji.db
 
-import com.rpgportugal.orthanc.kt.discord.emoji.EmojiKey
-import com.rpgportugal.orthanc.kt.persistence.dto.Emoji
+import com.rpgportugal.orthanc.kt.persistence.dto.emoji.Emoji
 import org.ktorm.schema.Table
-import org.ktorm.schema.enum
 import org.ktorm.schema.varchar
 
-object Emojis : Table<Emoji>("emojis") {
+object Emojis : Table<Emoji>("emoji") {
     val emoji_key = varchar("emoji_key").primaryKey().bindTo { it.emojiKey }
-    val discordId = varchar("discord_id").primaryKey().bindTo { it.discordId }
+    val name = varchar("name").bindTo { it.name }
+    val discordId = varchar("discord_id").bindTo { it.discordId }
 }

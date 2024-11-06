@@ -3,11 +3,11 @@ package com.rpgportugal.orthanc.kt.persistence.repository.application.db
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.error.DbError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
-import com.rpgportugal.orthanc.kt.persistence.dto.Application
+import com.rpgportugal.orthanc.kt.persistence.dto.app.Application
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
 import org.ktorm.database.Database
 import org.ktorm.dsl.eq
-import org.ktorm.entity.find
+import org.ktorm.entity.firstOrNull
 import org.ktorm.entity.sequenceOf
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -24,7 +24,7 @@ class SqlApplicationRepository(private val database: Database) : ApplicationRepo
             val application =
                 database
                     .sequenceOf(Applications)
-                    .find { app -> app.id eq id }
+                    .firstOrNull { app -> app.id eq id }
 
             if (application != null) {
                 Either.Right(application)
