@@ -5,10 +5,6 @@
 /src/main/resources/secret/
 app.properties
 
-/src/main/resources/prd/*
-
-*.sqlite
-
 
 ### Emacs ###
 # -*- mode: gitignore; -*-
