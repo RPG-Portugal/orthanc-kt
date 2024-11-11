@@ -1,6 +1,7 @@
-package com.rpgportugal.orthanc.kt.discord.modules.spamCatcher
+package com.rpgportugal.orthanc.kt.discord.modules.spam.catcher
 
 import arrow.core.Either
+import com.rpgportugal.orthanc.kt.discord.application.manager.ApplicationManager
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.BotModuleError
 import com.rpgportugal.orthanc.kt.error.DomainError
@@ -19,7 +20,7 @@ class SpamCatcherModule(
 
     override fun getName(): String = "spam-catcher"
 
-    override fun start(): Either<DomainError, TryCloseable> {
+    override fun start(applicationManager: ApplicationManager): Either<DomainError, TryCloseable> {
 
         val configuration = when (val res = botModuleConfigurationRepository.getSpamCatcherConfiguration()) {
             is Either.Right -> res.value

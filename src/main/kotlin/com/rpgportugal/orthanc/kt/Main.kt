@@ -14,7 +14,8 @@ class Main {
             val koin = startKoin { modules(Modules.modules) }.koin
 
             log.info("main - starting application")
-            koin.get<ApplicationManager>()
+            val appManager = koin.get<ApplicationManager>()
+            log.info("main - running application: {}", appManager)
         }
     }
 }

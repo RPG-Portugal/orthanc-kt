@@ -1,4 +1,4 @@
-package com.rpgportugal.orthanc.kt.discord.modules.spamCatcher
+package com.rpgportugal.orthanc.kt.discord.modules.spam.catcher
 
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import net.dv8tion.jda.api.JDA

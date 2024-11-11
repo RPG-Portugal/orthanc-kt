@@ -3,7 +3,7 @@ package com.rpgportugal.orthanc.kt.persistence.sql.application
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.error.DbError
 import com.rpgportugal.orthanc.kt.logging.Loggable
-import com.rpgportugal.orthanc.kt.persistence.dto.app.Application
+import com.rpgportugal.orthanc.kt.persistence.dto.application.Application
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.util.QueryUtil.getSingleIdValue
 import jakarta.persistence.EntityManager

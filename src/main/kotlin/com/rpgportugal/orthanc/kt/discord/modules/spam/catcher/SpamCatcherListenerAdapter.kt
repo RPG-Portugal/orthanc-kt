@@ -1,4 +1,4 @@
-package com.rpgportugal.orthanc.kt.discord.modules.spamCatcher
+package com.rpgportugal.orthanc.kt.discord.modules.spam.catcher
 
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.discord.listener.CloseableListenerAdapter

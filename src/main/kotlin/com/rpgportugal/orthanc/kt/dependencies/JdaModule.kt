@@ -5,7 +5,7 @@ import com.rpgportugal.orthanc.kt.error.DbError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
-import com.rpgportugal.orthanc.kt.persistence.dto.app.Application
+import com.rpgportugal.orthanc.kt.persistence.dto.application.Application
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
 import dev.minn.jda.ktx.jdabuilder.createJDA
 import net.dv8tion.jda.api.JDA

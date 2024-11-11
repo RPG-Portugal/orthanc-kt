@@ -1,21 +1,20 @@
 package com.rpgportugal.orthanc.kt.dependencies
 
-import com.rpgportugal.orthanc.kt.dependencies.bot.DiceModuleDepModule
-import com.rpgportugal.orthanc.kt.dependencies.bot.RoleAwardKoinModule
-import com.rpgportugal.orthanc.kt.dependencies.bot.SpamCatcherKoinModule
-import com.rpgportugal.orthanc.kt.dependencies.bot.ThreadUpdateKoinModule
+import com.rpgportugal.orthanc.kt.dependencies.bot.*
 import com.rpgportugal.orthanc.kt.scheduling.OrthancScheduler
 
 
 object Modules {
     val modules = listOf(
+        PermissionModule,
         PropertiesModule,
         DbModule,
         OrthancScheduler,
         DiceModuleDepModule,
-        ThreadUpdateKoinModule,
-        RoleAwardKoinModule,
-        SpamCatcherKoinModule,
+        ThreadUpdateDepModule,
+        RoleAwardDepModule,
+        SpamCatcherDepModule,
+        ApplicationManagementDepModule,
         JdaModule,
         ApplicationManagerModule
     ).map {

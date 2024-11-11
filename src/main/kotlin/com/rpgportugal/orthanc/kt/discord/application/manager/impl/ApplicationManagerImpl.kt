@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.mapNotNull
 import com.rpgportugal.orthanc.kt.discord.application.manager.ApplicationManager
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
+import com.rpgportugal.orthanc.kt.error.AppStateError
 import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
@@ -13,7 +14,7 @@ class ApplicationManagerImpl(
     private val botModules: Map<String, BotModule>,
 ) : ApplicationManager, Loggable {
 
-    private val stateManager = StateManager(botModules)
+    private val stateManager = StateManager(this,botModules)
 
     override fun start(moduleName: String): DomainError? {
         return stateManager.accessState { runningMods ->
@@ -28,7 +29,7 @@ class ApplicationManagerImpl(
                 return@accessState null
             }
 
-            when (val result = module.start()) {
+            when (val result = module.start(this)) {
                 is Either.Left -> {
                     val error = result.value
                     log.error("start - module {} failed to start: {}", moduleName, error.message)
@@ -50,6 +51,17 @@ class ApplicationManagerImpl(
         }
     }
 
+    override fun failIfNotRunning(moduleName: String): DomainError? {
+        return stateManager.accessState { runningMods ->
+            if (!runningMods.contains(moduleName)) {
+                AppStateError.ModuleNotRunning(moduleName)
+            } else {
+                null
+            }
+
+        }
+    }
+
     private fun stopInternal(moduleName: String, runningMods: MutableMap<String, TryCloseable>): DomainError? {
         return when (val result = runningMods.remove(moduleName)) {
             is TryCloseable -> result.tryClose()
@@ -60,10 +72,9 @@ class ApplicationManagerImpl(
         }
     }
 
-
-    private class StateManager(allModules: Map<String, BotModule>) : Loggable {
+    private class StateManager(private val applicationManager: ApplicationManager, allModules: Map<String, BotModule>) : Loggable {
         private val runningModules = allModules.mapNotNull {
-            when (val result = it.value.start()) {
+            when (val result = it.value.start(applicationManager)) {
                 is Either.Right -> {
                     log.info("StateManager - module {} started with success", it.key)
                     result.value
@@ -86,5 +97,9 @@ class ApplicationManagerImpl(
                 return func(runningModules)
             }
         }
+    }
+
+    override fun toString(): String {
+        return "ApplicationManagerImpl(botModules=${botModules.keys.joinToString(",")}, stateManager=${stateManager.accessState { runningMods -> runningMods.keys.joinToString(",")}})"
     }
 }

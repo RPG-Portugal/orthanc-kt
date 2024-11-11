@@ -16,4 +16,5 @@ data class ThrowableError<E : Throwable>(
     DbError,
     ListenerCloseError,
     SchedulerError,
-    BotModuleError
+    BotModuleError,
+    AppStateError

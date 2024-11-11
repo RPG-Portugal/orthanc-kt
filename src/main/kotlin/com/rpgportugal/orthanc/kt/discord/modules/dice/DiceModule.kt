@@ -1,6 +1,7 @@
 package com.rpgportugal.orthanc.kt.discord.modules.dice
 
 import arrow.core.Either
+import com.rpgportugal.orthanc.kt.discord.application.manager.ApplicationManager
 import com.rpgportugal.orthanc.kt.discord.domain.emoji.EmojiCategory
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.DomainError
@@ -21,7 +22,7 @@ class DiceModule(
 
     override fun getName(): String = "dice-roll"
 
-    override fun start(): Either<DomainError, TryCloseable> {
+    override fun start(applicationManager: ApplicationManager): Either<DomainError, TryCloseable> {
         try {
             val emojis = when (val result = emojiRepository.getEmojiByCategory(EmojiCategory.Dice)) {
                 is Either.Right -> result.value.associate { it.name to it.discordId }

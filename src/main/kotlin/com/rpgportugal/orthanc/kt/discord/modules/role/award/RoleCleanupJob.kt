@@ -1,4 +1,4 @@
-package com.rpgportugal.orthanc.kt.discord.modules.roleAward
+package com.rpgportugal.orthanc.kt.discord.modules.role.award
 
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import net.dv8tion.jda.api.JDA

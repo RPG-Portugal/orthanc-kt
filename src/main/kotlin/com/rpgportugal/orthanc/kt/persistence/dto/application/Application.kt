@@ -1,4 +1,4 @@
-package com.rpgportugal.orthanc.kt.persistence.dto.app
+package com.rpgportugal.orthanc.kt.persistence.dto.application
 
 import jakarta.persistence.*
 

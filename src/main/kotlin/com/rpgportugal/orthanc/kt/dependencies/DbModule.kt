@@ -7,11 +7,15 @@ import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.job.JobRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.module.ApplicationManagementConfigurationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.module.BotModuleConfigurationRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.permission.RolePermissionRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.application.SqlApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.emoji.SqlEmojiRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.job.SqlJobRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.module.SqlApplicationManagementConfigurationRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.module.SqlBotModuleConfigurationRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.permission.SqlRolePermissionRepository
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityManager
 import org.hibernate.SessionFactory
@@ -33,6 +37,8 @@ object DbModule : DepModule, Loggable {
         factoryOf(::SqlEmojiRepository).bind(EmojiRepository::class)
         factoryOf(::SqlJobRepository).bind(JobRepository::class)
         factoryOf(::SqlBotModuleConfigurationRepository).bind(BotModuleConfigurationRepository::class)
+        factoryOf(::SqlApplicationManagementConfigurationRepository).bind(ApplicationManagementConfigurationRepository::class)
+        factoryOf(::SqlRolePermissionRepository).bind(RolePermissionRepository::class)
     }
 
     private fun createEntityManager(sessionFactory: SessionFactory): EntityManager {

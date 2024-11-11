@@ -1,4 +1,4 @@
-package com.rpgportugal.orthanc.kt.discord.modules.threadUpdate
+package com.rpgportugal.orthanc.kt.discord.modules.thread.update
 
 import com.rpgportugal.orthanc.kt.discord.domain.archive.ArchiveState
 import com.rpgportugal.orthanc.kt.discord.listener.CloseableListenerAdapter

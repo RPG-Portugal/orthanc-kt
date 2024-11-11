@@ -1,4 +1,4 @@
-package com.rpgportugal.orthanc.kt.discord.modules.roleAward
+package com.rpgportugal.orthanc.kt.discord.modules.role.award
 
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.discord.listener.CloseableListenerAdapter
