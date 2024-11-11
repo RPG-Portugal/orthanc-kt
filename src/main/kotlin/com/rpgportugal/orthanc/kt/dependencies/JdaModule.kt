@@ -22,32 +22,7 @@ object JdaModule : DepModule, Loggable {
         singleOf(::createJda).bind(JDA::class)
     }
 
-    private fun createJda(
-        propertiesLoader: PropertiesLoader,
-        applicationRepository: ApplicationRepository
-    ): JDA {
-        val applicationProperties =
-            when (val result = propertiesLoader.load("app.properties")) {
-                is Either.Right -> result.value
-                is Either.Left -> {
-                    val error = result.value
-                    log.error("Failed to load application.properties => {}", error.message)
-                    when (error) {
-                        is ThrowableError<*> -> throw error.exception
-                        is PropertiesLoadError.NullInputStreamError ->
-                            throw Exception("Failed to retrieve ${error.fileName}")
-                    }
-                }
-            }
-
-        val appId =
-            applicationProperties
-                .getProperty("app.id")
-                ?.toLong()
-                ?: throw Exception("Missing app.id property")
-
-        log.info("Retrieved application ID: {}", appId)
-
+    private fun createJda(applicationRepository: ApplicationRepository): JDA {
         val application: Application =
             when (val result = applicationRepository.getActiveApplication()) {
                 is Either.Right -> result.value
