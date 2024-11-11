@@ -1,7 +1,7 @@
 package com.rpgportugal.orthanc.kt.discord.modules.dice
 
 import arrow.core.Either
-import com.rpgportugal.orthanc.kt.discord.listener.CloseableListenerAdapter
+import com.rpgportugal.orthanc.kt.discord.listener.DiscordListenerAdapter
 import com.rpgportugal.orthanc.kt.error.DiceModuleError
 import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
@@ -17,7 +17,7 @@ import kotlin.time.Duration.Companion.seconds
 class DiceListenerAdapter(
     private val jda: JDA,
     private val diceMap: Map<String, String>,
-) : CloseableListenerAdapter(), Logging {
+) : DiscordListenerAdapter(), Logging {
 
     init {
         jda.addEventListener(this)

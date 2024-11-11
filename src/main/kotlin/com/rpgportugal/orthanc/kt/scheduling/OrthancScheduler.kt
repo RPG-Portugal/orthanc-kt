@@ -1,6 +1,9 @@
 package com.rpgportugal.orthanc.kt.scheduling
 
+import arrow.core.Either
 import com.rpgportugal.orthanc.kt.dependencies.DepModule
+import com.rpgportugal.orthanc.kt.error.SchedulerError
+import com.rpgportugal.orthanc.kt.util.TryCloseable
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.quartz.*
@@ -25,7 +28,7 @@ class OrthancScheduler : Scheduler {
         cron: String,
         jobClass: Class<out Job>,
         jobData: JobDataMap,
-    ): Date? {
+    ): Either<SchedulerError, TryCloseable> {
         val jobBuilder = JobBuilder.newJob(jobClass)
 
         val jobDetail = jobBuilder
@@ -37,7 +40,23 @@ class OrthancScheduler : Scheduler {
             .startAt(Date())
             .withSchedule(CronScheduleBuilder.cronSchedule(cron))
             .build()
-        return scheduleJob(jobDetail, trigger)
+
+        val scheduleJob = scheduleJob(jobDetail, trigger)
+
+        return if (scheduleJob != null) {
+            Either.Left(SchedulerError.FailedToSchedule(jobName))
+        } else {
+            Either.Right(
+                TryCloseable {
+                    val isClosed = quartzScheduler.unscheduleJob(trigger.key)
+                    if (isClosed) {
+                        null
+                    } else {
+                        SchedulerError.FailedToUnschedule(jobName)
+                    }
+                }
+            )
+        }
     }
 
     companion object : DepModule {
