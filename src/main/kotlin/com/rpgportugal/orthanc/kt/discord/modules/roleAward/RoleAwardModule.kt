@@ -34,7 +34,9 @@ class RoleAwardModule(
             }
         }
 
-        return Either.Right(RoleAwardListenerAdapter(jda, configuration, scheduler))
+        val listenerAdapter = RoleAwardListenerAdapter(jda, configuration, scheduler)
+
+        return TryCloseable { listenerAdapter.tryClose() }.asResult()
     }
 }
 

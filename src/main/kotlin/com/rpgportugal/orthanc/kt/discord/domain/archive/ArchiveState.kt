@@ -1,4 +1,4 @@
-package com.rpgportugal.orthanc.kt.discord
+package com.rpgportugal.orthanc.kt.discord.domain.archive
 
 enum class ArchiveState {
     Unarchived,

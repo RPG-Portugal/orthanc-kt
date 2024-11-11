@@ -33,15 +33,13 @@ class DiceModule(
 
             val listenerAdapter = DiceListenerAdapter(jda, emojis)
 
-            jda.addEventListener(this)
-
             jda.updateCommands {
                 slash("roll", "rola todos os dados") {
                     option<String>("formula", "The dice formula to roll", autocomplete = true, required = true)
                 }
             }.queue()
 
-            return Either.Right(listenerAdapter)
+            return TryCloseable { listenerAdapter.tryClose() }.asResult()
 
         } catch (e: Exception) {
             log.error("start - failed to initialize DiceModule", e)
