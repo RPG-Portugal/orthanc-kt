@@ -3,7 +3,7 @@ package com.rpgportugal.orthanc.kt.persistence.dto.app
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "okt_active_application")
+@Table(name = "otc_active_application")
 open class ActiveApplication {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

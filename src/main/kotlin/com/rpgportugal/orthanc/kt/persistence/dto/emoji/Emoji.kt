@@ -4,7 +4,7 @@ import com.rpgportugal.orthanc.kt.persistence.dto.module.RoleAwardConfiguration
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "otk_emoji")
+@Table(name = "otc_emoji")
 open class Emoji {
 
     @Id

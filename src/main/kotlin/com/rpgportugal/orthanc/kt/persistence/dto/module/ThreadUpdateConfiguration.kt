@@ -8,7 +8,7 @@ import org.hibernate.annotations.Check
 
 
 @Entity
-@Table(name = "thread_update")
+@Table(name = "otc_thread_update")
 open class ThreadUpdateConfiguration {
 
     @Id

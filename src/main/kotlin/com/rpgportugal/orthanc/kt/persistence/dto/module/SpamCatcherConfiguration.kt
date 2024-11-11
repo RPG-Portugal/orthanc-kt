@@ -5,7 +5,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Check
 
 @Entity
-@Table(name = "spam_catcher_configuration")
+@Table(name = "otc_spam_catcher_configuration")
 open class SpamCatcherConfiguration {
 
     @Id

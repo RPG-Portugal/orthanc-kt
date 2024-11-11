@@ -6,7 +6,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Check
 
 @Entity
-@Table(name = "otk_role_award_configuration")
+@Table(name = "otc_role_award_configuration")
 
 open class RoleAwardConfiguration {
 

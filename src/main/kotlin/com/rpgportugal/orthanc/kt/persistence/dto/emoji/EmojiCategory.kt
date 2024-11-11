@@ -5,7 +5,7 @@ import jakarta.persistence.*
 typealias CategoryId = com.rpgportugal.orthanc.kt.discord.domain.emoji.EmojiCategory
 
 @Entity
-@Table(name = "dice_emoji")
+@Table(name = "otc_dice_emoji")
 open class EmojiCategory {
 
     @Id

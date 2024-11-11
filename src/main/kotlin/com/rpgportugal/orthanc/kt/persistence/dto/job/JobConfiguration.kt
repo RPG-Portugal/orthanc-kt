@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@Table(name = "otk_job_configuration")
+@Table(name = "otc_job_configuration")
 open class JobConfiguration {
 
     @Id

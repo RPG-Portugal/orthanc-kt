@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Check
 
 @Entity
-@Table(name = "otk_application")
+@Table(name = "otc_application")
 open class Application {
 
     @Id
