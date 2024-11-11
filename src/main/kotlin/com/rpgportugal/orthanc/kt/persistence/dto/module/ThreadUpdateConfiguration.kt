@@ -13,7 +13,7 @@ open class ThreadUpdateConfiguration {
 
     @Id
     @Column(name = "id", nullable = false)
-    @Check(name="one_row", constraints="id = 1")
+    @Check(name = "one_row", constraints = "id = 1")
     open var id: Long = 1L
 
     @Column(name = "warning_channel_id", nullable = false)

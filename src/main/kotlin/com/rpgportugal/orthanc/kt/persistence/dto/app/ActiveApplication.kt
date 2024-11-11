@@ -10,11 +10,11 @@ open class ActiveApplication {
     @Column(name = "id", nullable = false)
     open var id: Long = 1
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "active", nullable = false)
     open var active: Boolean = false
 
     @JoinColumn(name = "app_id", referencedColumnName = "id", nullable = false)
-    @OneToOne(fetch=FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     open var application: Application = Application()
 
     override fun equals(other: Any?): Boolean {

@@ -1,6 +1,9 @@
 package com.rpgportugal.orthanc.kt.persistence.dto.app
 
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.hibernate.annotations.Check
 
 @Entity
@@ -9,7 +12,7 @@ open class Application {
 
     @Id
     @Column(name = "id", nullable = false)
-    @Check(name="one_row", constraints="id = 1")
+    @Check(name = "one_row", constraints = "id = 1")
     open var id: Long = 0
 
     @Column(name = "name", nullable = false)

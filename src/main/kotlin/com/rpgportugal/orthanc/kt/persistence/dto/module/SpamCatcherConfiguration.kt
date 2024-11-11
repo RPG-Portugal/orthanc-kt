@@ -5,12 +5,12 @@ import jakarta.persistence.*
 import org.hibernate.annotations.Check
 
 @Entity
-@Table(name="spam_catcher_configuration")
+@Table(name = "spam_catcher_configuration")
 open class SpamCatcherConfiguration {
 
     @Id
     @Column(name = "id", nullable = false)
-    @Check(name="one_row", constraints="id = 1")
+    @Check(name = "one_row", constraints = "id = 1")
     open var id: Long = 1L
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -18,10 +18,10 @@ open class SpamCatcherConfiguration {
     open var jobConfiguration: JobConfiguration = JobConfiguration()
 
     @Column(name = "linkRegex", nullable = false)
-    open var linkRegex: String = "";
+    open var linkRegex: String = ""
 
     @Column(name = "honeypot_channel_id", nullable = false)
-    open var honeypotChannelId: Long = 0;
+    open var honeypotChannelId: Long = 0
 
     @Column(name = "warning_channel_id", nullable = false)
     open var warningChannelId: Long = 0

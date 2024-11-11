@@ -12,7 +12,7 @@ open class RoleAwardConfiguration {
 
     @Id
     @Column(name = "id", nullable = false)
-    @Check(name="one_row", constraints="id = 1")
+    @Check(name = "one_row", constraints = "id = 1")
     open var id: Long = 1L
 
     @Column(name = "role_id", nullable = false)
