@@ -15,7 +15,7 @@ import net.dv8tion.jda.api.events.channel.update.ChannelUpdateArchivedEvent
 
 class ThreadUpdateListenerAdapter(
     private val jda: JDA,
-    private val threadUpdateConfiguration: ThreadUpdateConfiguration
+    private val threadUpdateConfiguration: ThreadUpdateConfiguration,
 ) : CloseableListenerAdapter(), Loggable {
 
     init {
@@ -26,7 +26,7 @@ class ThreadUpdateListenerAdapter(
         try {
             jda.removeEventListener(this)
             return null
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             return ThrowableError(e)
         }
     }

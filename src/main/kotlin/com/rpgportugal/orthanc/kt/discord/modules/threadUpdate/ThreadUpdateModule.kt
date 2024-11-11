@@ -12,12 +12,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 
 class ThreadUpdateModule(
     private val botModuleConfigurationRepository: BotModuleConfigurationRepository,
-    private val jda: JDA
+    private val jda: JDA,
 ) : ListenerAdapter(), BotModule, Loggable {
 
     override fun getName(): String = "thread-update"
     override fun start(): Either<DomainError, TryCloseable> {
-        val configuration = when(val res = botModuleConfigurationRepository.getThreadUpdateConfiguration()) {
+        val configuration = when (val res = botModuleConfigurationRepository.getThreadUpdateConfiguration()) {
             is Either.Right -> res.value
             is Either.Left -> {
                 log.error("start - {}", res.value.message)

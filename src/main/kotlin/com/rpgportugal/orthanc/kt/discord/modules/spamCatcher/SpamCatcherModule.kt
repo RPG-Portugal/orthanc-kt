@@ -14,15 +14,15 @@ import net.dv8tion.jda.api.JDA
 class SpamCatcherModule(
     private val scheduler: Scheduler,
     private val botModuleConfigurationRepository: BotModuleConfigurationRepository,
-    private val jda: JDA
+    private val jda: JDA,
 ) : BotModule, Loggable {
 
     override fun getName(): String = "spam-catcher"
 
     override fun start(): Either<DomainError, TryCloseable> {
 
-        val configuration = when(val res = botModuleConfigurationRepository.getSpamCatcherConfiguration()) {
-            is Either.Right-> res.value
+        val configuration = when (val res = botModuleConfigurationRepository.getSpamCatcherConfiguration()) {
+            is Either.Right -> res.value
             is Either.Left -> {
                 log.error("start - {}", res.value.message)
                 return res

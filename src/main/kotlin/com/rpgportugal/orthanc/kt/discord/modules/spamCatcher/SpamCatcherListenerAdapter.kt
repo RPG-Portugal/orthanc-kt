@@ -42,9 +42,9 @@ class SpamCatcherListenerAdapter(
                 it["honeypotChannelId"] = configuration.honeypotChannelId
             })
 
-        tryCloseJob = when(result) {
+        tryCloseJob = when (result) {
             is Either.Right -> result.value
-            is Either.Left  -> {
+            is Either.Left -> {
                 log.error("init - {}", result.value.message)
                 throw Exception(result.value.message)
             }

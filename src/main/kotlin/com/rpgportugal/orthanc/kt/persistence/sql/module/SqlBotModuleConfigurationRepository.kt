@@ -12,7 +12,7 @@ import jakarta.persistence.EntityManager
 
 
 class SqlBotModuleConfigurationRepository(
-    private val entityManager: EntityManager
+    private val entityManager: EntityManager,
 ) : BotModuleConfigurationRepository, Loggable {
 
     override fun getRoleAwardConfiguration(): Either<DbError, RoleAwardConfiguration> {

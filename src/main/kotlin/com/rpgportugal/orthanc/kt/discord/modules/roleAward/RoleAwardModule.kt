@@ -5,7 +5,6 @@ import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
-import com.rpgportugal.orthanc.kt.persistence.repository.job.JobRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.module.BotModuleConfigurationRepository
 import com.rpgportugal.orthanc.kt.scheduling.Scheduler
 import com.rpgportugal.orthanc.kt.util.TryCloseable

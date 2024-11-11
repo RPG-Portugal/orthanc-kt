@@ -1,7 +1,6 @@
 package com.rpgportugal.orthanc.kt.persistence.dto.app
 
 import jakarta.persistence.*
-import org.hibernate.annotations.Check
 
 @Entity
 @Table(name = "otc_application")
