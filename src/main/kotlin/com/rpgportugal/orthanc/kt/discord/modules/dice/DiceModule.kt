@@ -5,7 +5,7 @@ import com.rpgportugal.orthanc.kt.discord.domain.emoji.EmojiCategory
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
-import com.rpgportugal.orthanc.kt.logging.Logging
+import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
 import com.rpgportugal.orthanc.kt.util.TryCloseable
@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.JDA
 class DiceModule(
     private val jda: JDA,
     private val emojiRepository: EmojiRepository,
-) : BotModule, Logging {
+) : BotModule, Loggable {
 
     override fun getName(): String = "dice-roll"
 

@@ -1,4 +1,4 @@
-import com.rpgportugal.orthanc.kt.persistence.repository.job.db.SqlJobRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.job.SqlJobRepository
 import org.junit.jupiter.api.Test
 import org.ktorm.database.Database
 

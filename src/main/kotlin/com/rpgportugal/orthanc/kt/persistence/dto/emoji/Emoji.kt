@@ -1,6 +1,6 @@
 package com.rpgportugal.orthanc.kt.persistence.dto.emoji
 
-import com.rpgportugal.orthanc.kt.persistence.dto.job.RoleAwardConfiguration
+import com.rpgportugal.orthanc.kt.persistence.dto.module.RoleAwardConfiguration
 import jakarta.persistence.*
 
 @Entity

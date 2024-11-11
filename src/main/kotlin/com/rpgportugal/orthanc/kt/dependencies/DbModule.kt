@@ -2,17 +2,18 @@ package com.rpgportugal.orthanc.kt.dependencies
 
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
-import com.rpgportugal.orthanc.kt.logging.Logging
+import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
-import com.rpgportugal.orthanc.kt.persistence.repository.application.db.SqlApplicationRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.application.SqlApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
-import com.rpgportugal.orthanc.kt.persistence.repository.emoji.db.SqlEmojiRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.emoji.SqlEmojiRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.job.JobRepository
-import com.rpgportugal.orthanc.kt.persistence.repository.job.db.SqlJobRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.module.BotModuleConfigurationRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.job.SqlJobRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.module.SqlBotModuleConfigurationRepository
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityManager
-import jakarta.persistence.Persistence
 import org.hibernate.SessionFactory
 import org.hibernate.cfg.Configuration
 import org.hibernate.hikaricp.internal.HikariCPConnectionProvider
@@ -21,10 +22,9 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.reflections.Reflections
-import org.reflections.scanners.TypeAnnotationsScanner
 
 
-object DbModule : DepModule, Logging {
+object DbModule : DepModule, Loggable {
 
     override val module = module {
         singleOf(::buildSessionFactory).bind(SessionFactory::class)
@@ -32,6 +32,7 @@ object DbModule : DepModule, Logging {
         factoryOf(::SqlApplicationRepository).bind(ApplicationRepository::class)
         factoryOf(::SqlEmojiRepository).bind(EmojiRepository::class)
         factoryOf(::SqlJobRepository).bind(JobRepository::class)
+        factoryOf(::SqlBotModuleConfigurationRepository).bind(BotModuleConfigurationRepository::class)
     }
 
     private fun createEntityManager(sessionFactory: SessionFactory): EntityManager {

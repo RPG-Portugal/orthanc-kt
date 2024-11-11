@@ -5,13 +5,13 @@ import arrow.core.mapNotNull
 import com.rpgportugal.orthanc.kt.discord.application.manager.ApplicationManager
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.DomainError
-import com.rpgportugal.orthanc.kt.logging.Logging
+import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.util.TryCloseable
 
 class ApplicationManagerImpl(
     private val botModules: Map<String, BotModule>,
-) : ApplicationManager, Logging {
+) : ApplicationManager, Loggable {
 
     private val stateManager = StateManager(botModules)
 
@@ -61,7 +61,7 @@ class ApplicationManagerImpl(
     }
 
 
-    private class StateManager(allModules: Map<String, BotModule>) : Logging {
+    private class StateManager(allModules: Map<String, BotModule>) : Loggable {
         private val runningModules = allModules.mapNotNull {
             when (val result = it.value.start()) {
                 is Either.Right -> {

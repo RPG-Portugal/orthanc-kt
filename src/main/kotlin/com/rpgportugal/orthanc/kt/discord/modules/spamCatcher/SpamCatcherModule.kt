@@ -1,25 +1,17 @@
 package com.rpgportugal.orthanc.kt.discord.modules.spamCatcher
 
 import arrow.core.Either
-import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.DomainError
-import com.rpgportugal.orthanc.kt.logging.Logging
+import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.scheduling.Scheduler
 import com.rpgportugal.orthanc.kt.util.TryCloseable
-import net.dv8tion.jda.api.hooks.ListenerAdapter
 
 class SpamCatcherModule(
-    propertiesLoader: PropertiesLoader,
     private val scheduler: Scheduler,
-) : ListenerAdapter(), BotModule, Logging {
-    /*
-        companion object : DepModule {
-            override val module = module {
-                single { SpamCatcherModule(get(), get()) } bind BotModule::class
-            }
-        }
+) : BotModule, Loggable {
 
+    /*
         private val schedulerGroupName = "SpamCatcher"
         private val triggerName = "sendWarnMessageTrigger"
         private val jobName = "sendWarnMessageJob"
@@ -30,22 +22,22 @@ class SpamCatcherModule(
         private var cron: String = "0 *///5 * * * ? *"
 
     /*
+
     private var regex: Regex? = null
 
-    override fun getName(): String = "Spam Catcher"
+
     override fun start(): Either<DomainError, TryCloseable> {
         TODO("Not yet implemented")
     }
 
     fun attach(jda: JDA) {
-        jda.addEventListener(this)
 //       when (propertiesEither) {
 //           is Either.Left -> {}
 //            is Either.Right -> {
-                linkRegex = TODO() //propertiesEither.value.getProperty("linkRegex")
-                honeypotChannelId = TODO()//propertiesEither.value.getProperty("honeypotChannelId")
-                warningChannelId = TODO()//propertiesEither.value.getProperty("warningChannelId")
-                cron = TODO()//propertiesEither.value.getProperty("cron") ?:
+                linkRegex =
+                honeypotChannelId =
+                warningChannelId =
+                cron = :
                 regex = if (linkRegex?.isNotBlank() == true) {
                     linkRegex!!.toRegex(setOf(RegexOption.IGNORE_CASE, RegexOption.MULTILINE))
                 } else {
@@ -93,9 +85,8 @@ class SpamCatcherModule(
 
     }
 */
-    override fun getName(): String {
-        TODO("Not yet implemented")
-    }
+
+    override fun getName(): String = "spam-catcher"
 
     override fun start(): Either<DomainError, TryCloseable> {
         TODO("Not yet implemented")

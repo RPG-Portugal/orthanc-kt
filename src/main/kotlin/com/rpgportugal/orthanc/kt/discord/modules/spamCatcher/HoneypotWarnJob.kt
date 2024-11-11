@@ -1,11 +1,11 @@
 package com.rpgportugal.orthanc.kt.discord.modules.spamCatcher
 
-import com.rpgportugal.orthanc.kt.logging.Logging
+import com.rpgportugal.orthanc.kt.logging.Loggable
 import net.dv8tion.jda.api.JDA
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 
-class HoneypotWarnJob : Job, Logging {
+class HoneypotWarnJob : Job, Loggable {
     override fun execute(context: JobExecutionContext?) {
         val jobDataMap = context?.jobDetail?.jobDataMap
         val jda = (jobDataMap?.get("jda") ?: return) as JDA

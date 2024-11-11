@@ -1,12 +1,12 @@
 package com.rpgportugal.orthanc.kt.discord.modules.roleAward
 
 import arrow.core.Either
-import com.rpgportugal.orthanc.kt.discord.listener.DiscordListenerAdapter
+import com.rpgportugal.orthanc.kt.discord.listener.CloseableListenerAdapter
 import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
-import com.rpgportugal.orthanc.kt.logging.Logging
+import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
-import com.rpgportugal.orthanc.kt.persistence.dto.job.RoleAwardConfiguration
+import com.rpgportugal.orthanc.kt.persistence.dto.module.RoleAwardConfiguration
 import com.rpgportugal.orthanc.kt.scheduling.Scheduler
 import com.rpgportugal.orthanc.kt.util.TryCloseable
 import net.dv8tion.jda.api.JDA
@@ -19,16 +19,18 @@ class RoleAwardListenerAdapter(
     private val jda: JDA,
     private val configuration: RoleAwardConfiguration,
     scheduler: Scheduler,
-) : DiscordListenerAdapter(), Logging {
+) : CloseableListenerAdapter(), Loggable {
 
     private val unscheduleJob: TryCloseable
 
     init {
+        val jobConfiguration = configuration.jobConfiguration
+
         val result = scheduler.simpleCronJobSchedule(
-            configuration.name,
-            configuration.triggerName,
-            configuration.schedulerGroupName,
-            configuration.cronExpression,
+            jobConfiguration.name,
+            jobConfiguration.triggerName,
+            jobConfiguration.schedulerGroupName,
+            jobConfiguration.cronExpression,
             RoleCleanupJob::class.java,
             JobDataMap().also {
                 it["jda"] = jda

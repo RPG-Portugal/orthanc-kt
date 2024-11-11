@@ -6,5 +6,5 @@ import com.rpgportugal.orthanc.kt.persistence.dto.app.Application
 
 
 interface ApplicationRepository {
-    fun getApplicationById(id: Long): Either<DbError, Application>
+    fun getActiveApplication(): Either<DbError, Application>
 }
