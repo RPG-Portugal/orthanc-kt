@@ -24,7 +24,7 @@ class DiceModule(
     override fun start(): Either<DomainError, TryCloseable> {
         try {
             val emojis = when (val result = emojiRepository.getEmojiByCategory(EmojiCategory.Dice)) {
-                is Either.Right -> result.value.associate { it.key to it.discordId }
+                is Either.Right -> result.value.associate { it.name to it.discordId }
                 is Either.Left -> {
                     log.error("start - Failed to get emojis: {}", result.value)
                     return Either.Left(result.value)
