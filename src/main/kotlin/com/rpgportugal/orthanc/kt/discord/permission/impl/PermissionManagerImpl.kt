@@ -8,10 +8,10 @@ import com.rpgportugal.orthanc.kt.persistence.repository.permission.RolePermissi
 import net.dv8tion.jda.api.entities.Role
 
 class PermissionManagerImpl(
-    private val rolePermissionRepository: RolePermissionRepository
+    private val rolePermissionRepository: RolePermissionRepository,
 ) : PermissionManager {
 
-    override fun hasPermission(permission: Permission,roles: List<Role>): Either<DbError,Boolean> {
+    override fun hasPermission(permission: Permission, roles: List<Role>): Either<DbError, Boolean> {
         val roleIds = roles.map { it.idLong }.toList()
         return rolePermissionRepository.hasPermission(permission, roleIds)
     }

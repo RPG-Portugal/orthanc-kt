@@ -1,7 +1,7 @@
 package com.rpgportugal.orthanc.kt.discord.modules.thread.update
 
 import arrow.core.Either
-import com.rpgportugal.orthanc.kt.discord.application.manager.ApplicationManager
+import com.rpgportugal.orthanc.kt.discord.application.manager.ModuleStateManager
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.logging.Loggable
@@ -17,7 +17,7 @@ class ThreadUpdateModule(
 ) : ListenerAdapter(), BotModule, Loggable {
 
     override fun getName(): String = "thread-update"
-    override fun start(applicationManager: ApplicationManager): Either<DomainError, TryCloseable> {
+    override fun start(moduleStateManager: ModuleStateManager): Either<DomainError, TryCloseable> {
         val configuration = when (val res = botModuleConfigurationRepository.getThreadUpdateConfiguration()) {
             is Either.Right -> res.value
             is Either.Left -> {

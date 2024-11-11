@@ -2,7 +2,7 @@ package com.rpgportugal.orthanc.kt.discord.application.manager.impl
 
 import arrow.core.Either
 import arrow.core.mapNotNull
-import com.rpgportugal.orthanc.kt.discord.application.manager.ApplicationManager
+import com.rpgportugal.orthanc.kt.discord.application.manager.ModuleStateManager
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.AppStateError
 import com.rpgportugal.orthanc.kt.error.DomainError
@@ -10,11 +10,11 @@ import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.util.TryCloseable
 
-class ApplicationManagerImpl(
+class ModuleStateManagerImpl(
     private val botModules: Map<String, BotModule>,
-) : ApplicationManager, Loggable {
+) : ModuleStateManager, Loggable {
 
-    private val stateManager = StateManager(this,botModules)
+    private val stateManager = StateManager(this, botModules)
 
     override fun start(moduleName: String): DomainError? {
         return stateManager.accessState { runningMods ->
@@ -72,9 +72,10 @@ class ApplicationManagerImpl(
         }
     }
 
-    private class StateManager(private val applicationManager: ApplicationManager, allModules: Map<String, BotModule>) : Loggable {
+    private class StateManager(private val moduleStateManager: ModuleStateManager, allModules: Map<String, BotModule>) :
+        Loggable {
         private val runningModules = allModules.mapNotNull {
-            when (val result = it.value.start(applicationManager)) {
+            when (val result = it.value.start(moduleStateManager)) {
                 is Either.Right -> {
                     log.info("StateManager - module {} started with success", it.key)
                     result.value
@@ -100,6 +101,8 @@ class ApplicationManagerImpl(
     }
 
     override fun toString(): String {
-        return "ApplicationManagerImpl(botModules=${botModules.keys.joinToString(",")}, stateManager=${stateManager.accessState { runningMods -> runningMods.keys.joinToString(",")}})"
+        return "ApplicationManagerImpl(" +
+                "botModules=${botModules.keys.joinToString(",")}, " +
+                "runningModules=${stateManager.accessState { runningMods -> runningMods.keys.joinToString(",") }})"
     }
 }

@@ -7,8 +7,8 @@ import jakarta.persistence.Table
 import org.hibernate.annotations.Check
 
 @Entity
-@Table(name = "otc_application_management_configuration")
-open class ApplicationManagementConfiguration {
+@Table(name = "otc_module_state_management_configuration")
+open class ModuleStateManagementConfiguration {
     @Id
     @Column(name = "id", nullable = false)
     @Check(name = "one_row", constraints = "id = 1")
@@ -18,7 +18,7 @@ open class ApplicationManagementConfiguration {
     open var warningChannelId: Long = 0
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is ApplicationManagementConfiguration) return false
+        if (other !is ModuleStateManagementConfiguration) return false
 
         if (id != other.id) return false
         if (warningChannelId != other.warningChannelId) return false

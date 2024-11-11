@@ -1,7 +1,7 @@
 package com.rpgportugal.orthanc.kt.discord.modules.role.award
 
 import arrow.core.Either
-import com.rpgportugal.orthanc.kt.discord.application.manager.ApplicationManager
+import com.rpgportugal.orthanc.kt.discord.application.manager.ModuleStateManager
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.logging.Loggable
@@ -24,7 +24,7 @@ class RoleAwardModule(
 
     override fun getName(): String = "role-award"
 
-    override fun start(applicationManager: ApplicationManager): Either<DomainError, TryCloseable> {
+    override fun start(moduleStateManager: ModuleStateManager): Either<DomainError, TryCloseable> {
 
         val configuration = when (val result = botModuleConfigurationRepository.getRoleAwardConfiguration()) {
             is Either.Right -> result.value

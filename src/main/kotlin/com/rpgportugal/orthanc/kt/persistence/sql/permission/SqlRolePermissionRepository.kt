@@ -12,7 +12,7 @@ import jakarta.persistence.EntityManager
 import java.sql.SQLException
 
 class SqlRolePermissionRepository(
-    private val entityManager: EntityManager
+    private val entityManager: EntityManager,
 ) : RolePermissionRepository {
 
     override fun hasPermission(permission: Permission, roleIds: List<Long>): Either<DbError, Boolean> {

@@ -1,7 +1,7 @@
 package com.rpgportugal.orthanc.kt
 
 import com.rpgportugal.orthanc.kt.dependencies.Modules
-import com.rpgportugal.orthanc.kt.discord.application.manager.ApplicationManager
+import com.rpgportugal.orthanc.kt.discord.application.manager.ModuleStateManager
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
 import org.koin.core.context.startKoin
@@ -14,7 +14,7 @@ class Main {
             val koin = startKoin { modules(Modules.modules) }.koin
 
             log.info("main - starting application")
-            val appManager = koin.get<ApplicationManager>()
+            val appManager = koin.get<ModuleStateManager>()
             log.info("main - running application: {}", appManager)
         }
     }
