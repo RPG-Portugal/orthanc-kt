@@ -24,7 +24,9 @@ dependencies {
     implementation("io.insert-koin:koin-core-jvm:${properties["koin.version"]}")
     implementation("net.dv8tion:JDA:${properties["jda.version"]}")
     implementation("club.minnced:jda-ktx:${properties["jda.ktx.version"]}")
-    implementation("org.ktorm:ktorm-core:${properties["ktorm.version"]}")
+    implementation("jakarta.persistence:jakarta.persistence-api:${properties["jakarta.persistence.version"]}")
+    implementation("com.mchange:c3p0:0.10.1")
+    implementation("org.hibernate.orm:hibernate-core:${properties["hibernate.version"]}")
     implementation("org.xerial:sqlite-jdbc:${properties["sqlite.driver.version"]}")
     implementation("org.quartz-scheduler:quartz:${properties["quartz.version"]}")
     //Bot Module Dependencies

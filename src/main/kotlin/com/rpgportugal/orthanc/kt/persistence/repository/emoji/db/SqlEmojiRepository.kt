@@ -6,19 +6,12 @@ import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.logging.Logging
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
-import org.ktorm.database.Database
-import org.ktorm.entity.map
-import org.ktorm.entity.sequenceOf
+import jakarta.persistence.EntityManager
 
-class SqlEmojiRepository(private val database: Database) : Logging, EmojiRepository {
+class SqlEmojiRepository(private val entityManager: EntityManager) : Logging, EmojiRepository {
     override fun getEmojiKeyToDiscordCodeMap(): Either<DbError, Map<String, String>> =
         try {
-            val result =
-                database.sequenceOf(Emojis)
-                    .map { it.emojiKey to it.discordId }
-                    .toMap()
-
-            Either.Right(result)
+            TODO()
         } catch (e: Exception) {
             log.error("Error getting emoji from repository", e)
             Either.Left(ThrowableError(e))
