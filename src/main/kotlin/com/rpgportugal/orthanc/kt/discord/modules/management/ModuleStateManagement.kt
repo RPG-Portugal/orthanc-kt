@@ -11,13 +11,13 @@ import com.rpgportugal.orthanc.kt.util.EitherExtensions.toRight
 import com.rpgportugal.orthanc.kt.util.TryCloseable
 import net.dv8tion.jda.api.JDA
 
-class AppManagement(
-    val jda: JDA,
-    val permissionManager: PermissionManager,
-    val moduleStateManagementConfigurationRepository: ModuleStateManagementConfigurationRepository,
+class ModuleStateManagement(
+    private val jda: JDA,
+    private val permissionManager: PermissionManager,
+    private val moduleStateManagementConfigurationRepository: ModuleStateManagementConfigurationRepository,
 ) : BotModule {
-    override fun getName(): String = "app-management"
 
+    override fun getName(): String = "module-management"
     override fun start(moduleStateManager: ModuleStateManager): Either<DomainError, TryCloseable> {
 
         val configuration =
