@@ -43,7 +43,7 @@ object DbModule : DepModule, Logging {
                     "hibernate.hbm2ddl.auto",
                     "update"
                 )
-                if (getProperty("is.sqlite", "false").toBoolean()) {
+                if (getProperty("is.sqlite").toBoolean()) {
                     setProperty(
                         "hibernate.dialect",
                         SQLiteDialect::class.java.name
