@@ -1,6 +1,6 @@
 package com.rpgportugal.orthanc.kt.persistence.dto.emoji
 
-import com.rpgportugal.orthanc.kt.persistence.dto.module.RoleAwardConfiguration
+import com.rpgportugal.orthanc.kt.discord.domain.emoji.EmojiCategory
 import jakarta.persistence.*
 
 @Entity
@@ -17,11 +17,9 @@ open class Emoji {
     @Column(name = "name", nullable = false)
     open var name: String = ""
 
-    @ManyToOne(targetEntity = RoleAwardConfiguration::class, fetch = FetchType.EAGER, optional = true)
-    open var roleAwardConfigurationId: RoleAwardConfiguration? = null
-
-    @ManyToOne(targetEntity = EmojiCategory::class, fetch = FetchType.EAGER, optional = false)
-    open var category: EmojiCategory = EmojiCategory()
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    open var category: EmojiCategory = EmojiCategory.Misc
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -30,7 +28,6 @@ open class Emoji {
         if (key != other.key) return false
         if (discordId != other.discordId) return false
         if (name != other.name) return false
-        if (roleAwardConfigurationId != other.roleAwardConfigurationId) return false
         if (category != other.category) return false
 
         return true
@@ -40,7 +37,6 @@ open class Emoji {
         var result = key.hashCode()
         result = 31 * result + discordId.hashCode()
         result = 31 * result + name.hashCode()
-        result = 31 * result + (roleAwardConfigurationId?.hashCode() ?: 0)
         result = 31 * result + category.hashCode()
         return result
     }

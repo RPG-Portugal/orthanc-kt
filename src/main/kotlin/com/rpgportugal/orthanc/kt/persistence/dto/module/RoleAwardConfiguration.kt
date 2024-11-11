@@ -31,8 +31,9 @@ open class RoleAwardConfiguration {
     @JoinColumn(name = "job_configuration_id", nullable = false)
     open var jobConfiguration: JobConfiguration = JobConfiguration()
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "key", targetEntity = Emoji::class)
-    open var emojis = mutableListOf<Emoji>()
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "emoji_key", nullable = false)
+    open var emoji = Emoji()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -44,7 +45,7 @@ open class RoleAwardConfiguration {
         if (threshold != other.threshold) return false
         if (warningChannelId != other.warningChannelId) return false
         if (jobConfiguration != other.jobConfiguration) return false
-        if (emojis != other.emojis) return false
+        if (emoji != other.emoji) return false
 
         return true
     }
@@ -56,7 +57,7 @@ open class RoleAwardConfiguration {
         result = 31 * result + threshold.hashCode()
         result = 31 * result + warningChannelId.hashCode()
         result = 31 * result + jobConfiguration.hashCode()
-        result = 31 * result + emojis.hashCode()
+        result = 31 * result + emoji.hashCode()
         return result
     }
 

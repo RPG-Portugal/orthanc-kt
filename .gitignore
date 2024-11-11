@@ -3,6 +3,7 @@
 
 /src/main/resources/app.properties
 /src/main/resources/db/
+/secret
 app.properties
 
 

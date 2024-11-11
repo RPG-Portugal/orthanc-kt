@@ -63,7 +63,7 @@ class RoleAwardListenerAdapter(
     }
 
     override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
-        if (!configuration.emojis.any {
+        if (!configuration.emoji.let {
                 if (event.emoji.type == Emoji.Type.UNICODE) {
                     event.emoji.asUnicode().asCodepoints == it.name
                 } else {

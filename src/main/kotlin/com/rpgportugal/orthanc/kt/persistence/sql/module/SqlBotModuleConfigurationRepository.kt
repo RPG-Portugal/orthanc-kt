@@ -19,7 +19,8 @@ class SqlBotModuleConfigurationRepository(
         val query =
             "select RA from RoleAwardConfiguration RA " +
                     "join fetch JobConfiguration JC on RA.jobConfiguration.id = JC.id " +
-                    "where RA.id = 1"
+                    "join fetch Emoji EM on RA.emoji.key = EM.key " +
+                    "where RA.id = 1 "
 
         val cls = RoleAwardConfiguration::class.java
 

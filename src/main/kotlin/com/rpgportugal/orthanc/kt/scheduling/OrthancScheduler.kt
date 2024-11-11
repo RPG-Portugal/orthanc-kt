@@ -44,7 +44,7 @@ class OrthancScheduler : Scheduler {
 
         val scheduleJob = scheduleJob(jobDetail, trigger)
 
-        return if (scheduleJob != null) {
+        return if (scheduleJob == null) {
             SchedulerError.FailedToSchedule(jobName).toLeft()
         } else {
             TryCloseable {
