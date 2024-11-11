@@ -16,6 +16,8 @@ import jakarta.persistence.Persistence
 import org.hibernate.SessionFactory
 import org.hibernate.cfg.Configuration
 import org.hibernate.hikaricp.internal.HikariCPConnectionProvider
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.reflections.Reflections
@@ -25,11 +27,15 @@ import org.reflections.scanners.TypeAnnotationsScanner
 object DbModule : DepModule, Logging {
 
     override val module = module {
-        single { buildSessionFactory(get()) } bind SessionFactory::class
-        factory { get<SessionFactory>().createEntityManager() } bind EntityManager::class
-        factory { SqlApplicationRepository(get()) } bind ApplicationRepository::class
-        factory { SqlEmojiRepository(get()) } bind EmojiRepository::class
-        factory { SqlJobRepository(get()) } bind JobRepository::class
+        singleOf(::buildSessionFactory).bind(SessionFactory::class)
+        factoryOf(::createEntityManager).bind(EntityManager::class)
+        factoryOf(::SqlApplicationRepository).bind(ApplicationRepository::class)
+        factoryOf(::SqlEmojiRepository).bind(EmojiRepository::class)
+        factoryOf(::SqlJobRepository).bind(JobRepository::class)
+    }
+
+    private fun createEntityManager(sessionFactory: SessionFactory): EntityManager {
+        return sessionFactory.createEntityManager()
     }
 
     private fun buildSessionFactory(propertiesLoader: PropertiesLoader): SessionFactory {

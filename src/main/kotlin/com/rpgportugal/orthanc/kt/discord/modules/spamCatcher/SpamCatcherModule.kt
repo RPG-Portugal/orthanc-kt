@@ -4,6 +4,7 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
 import com.rpgportugal.orthanc.kt.error.DomainError
+import com.rpgportugal.orthanc.kt.logging.Logging
 import com.rpgportugal.orthanc.kt.scheduling.Scheduler
 import com.rpgportugal.orthanc.kt.util.TryCloseable
 import net.dv8tion.jda.api.hooks.ListenerAdapter
@@ -11,7 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 class SpamCatcherModule(
     propertiesLoader: PropertiesLoader,
     private val scheduler: Scheduler,
-) : ListenerAdapter(), BotModule {
+) : ListenerAdapter(), BotModule, Logging {
     /*
         companion object : DepModule {
             override val module = module {

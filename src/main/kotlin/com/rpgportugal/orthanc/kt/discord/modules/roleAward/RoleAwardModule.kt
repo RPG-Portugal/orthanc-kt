@@ -25,7 +25,7 @@ class RoleAwardModule(
 
     override fun start(): Either<DomainError, TryCloseable> {
 
-        val configuration = when(val result = jobRepository.getRoleAwardConfigurationByJobName(getName())) {
+        val configuration = when (val result = jobRepository.getRoleAwardConfigurationByJobName(getName())) {
             is Either.Right -> result.value
             is Either.Left -> {
                 log.error("Failed to get RoleAward configuration: {}", result.value.message)

@@ -1,8 +1,8 @@
 package com.rpgportugal.orthanc.kt.dependencies
 
-import com.rpgportugal.orthanc.kt.discord.modules.dice.DiceModuleDepModule
-import com.rpgportugal.orthanc.kt.discord.modules.roleAward.RoleAwardKoinModule
-import com.rpgportugal.orthanc.kt.discord.modules.threadUpdate.ThreadUpdateKoinModule
+import com.rpgportugal.orthanc.kt.dependencies.bot.DiceModuleDepModule
+import com.rpgportugal.orthanc.kt.dependencies.bot.RoleAwardKoinModule
+import com.rpgportugal.orthanc.kt.dependencies.bot.ThreadUpdateKoinModule
 import com.rpgportugal.orthanc.kt.scheduling.OrthancScheduler
 
 

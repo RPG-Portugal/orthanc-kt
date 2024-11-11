@@ -9,13 +9,10 @@ import com.rpgportugal.orthanc.kt.logging.Logging
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
 import com.rpgportugal.orthanc.kt.util.TryCloseable
-import dev.minn.jda.ktx.events.onCommand
 import dev.minn.jda.ktx.interactions.commands.option
 import dev.minn.jda.ktx.interactions.commands.slash
 import dev.minn.jda.ktx.interactions.commands.updateCommands
-import dev.minn.jda.ktx.interactions.components.getOption
 import net.dv8tion.jda.api.JDA
-import kotlin.time.Duration.Companion.seconds
 
 class DiceModule(
     private val jda: JDA,

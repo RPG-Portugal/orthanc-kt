@@ -27,20 +27,24 @@ class SqlEmojiRepository(private val entityManager: EntityManager) : Logging, Em
                     .singleResult
 
             Either.Right(result)
-        } catch (e : NonUniqueResultException) {
+        } catch (e: NonUniqueResultException) {
             log.error("Failed to get emoji category", e)
-            Either.Left(DbError.EntityNotFoundError(
-                EmojiCategory::class.java.name,
-                category,
-                e.message ?: "Failed to find EmojiCategory with id = $category"
-            ))
+            Either.Left(
+                DbError.EntityNotFoundError(
+                    EmojiCategory::class.java.name,
+                    category,
+                    e.message ?: "Failed to find EmojiCategory with id = $category"
+                )
+            )
         } catch (e: NoResultException) {
             log.error("Failed to get emoji category", e)
-            Either.Left(DbError.EntityNotUnique(
-                EmojiCategory::class.java.name,
-                category,
-                e.message ?: "Too many EmojiCategory with id = $category"
-            ))
+            Either.Left(
+                DbError.EntityNotUnique(
+                    EmojiCategory::class.java.name,
+                    category,
+                    e.message ?: "Too many EmojiCategory with id = $category"
+                )
+            )
         } catch (e: Exception) {
             log.error("Error getting emoji from repository", e)
             Either.Left(ThrowableError(e))

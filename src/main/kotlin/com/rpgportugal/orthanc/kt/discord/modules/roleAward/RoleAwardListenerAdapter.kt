@@ -37,11 +37,12 @@ class RoleAwardListenerAdapter(
                 it["warningChannelId"] = configuration.warningChannelId
             })
 
-        unscheduleJob = when(result) {
+        unscheduleJob = when (result) {
             is Either.Left -> {
                 log.error("RoleAwardListenerAdapter - Failed to schedule job: {}", result.value.message)
                 throw Exception(result.value.message)
             }
+
             is Either.Right -> {
                 jda.addEventListener(this)
                 result.value

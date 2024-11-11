@@ -15,7 +15,7 @@ open class EmojiCategory {
 
 
     @OneToMany(fetch = FetchType.EAGER, targetEntity = Emoji::class)
-    @JoinColumn(name = "emoji_id", nullable = false, referencedColumnName = "key")
+    @JoinColumn(name = "emoji_id", nullable = false)
     open var emoji: List<Emoji> = mutableListOf()
 
     override fun equals(other: Any?): Boolean {
