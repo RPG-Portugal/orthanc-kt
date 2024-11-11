@@ -1,15 +1,7 @@
-# general properties
-
-#Long - apple database identifier
-app.id=1
-
 # hibernate properties
 
-#Boolean - set true if using sqlite
-is.sqlite=true
-
-#String - url for database
+url for database
 hibernate.connection.url=jdbc:sqlite:/path/to/db/db.sqlite
 
-#String - sql model construction mode
+sql model construction mode
 hibernate.hbm2ddl.auto=update
