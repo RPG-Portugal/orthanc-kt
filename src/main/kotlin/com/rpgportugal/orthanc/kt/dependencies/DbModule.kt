@@ -4,22 +4,23 @@ import arrow.core.Either
 import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.logging.Logging
 import com.rpgportugal.orthanc.kt.logging.log
-import com.rpgportugal.orthanc.kt.persistence.dto.app.Application
-import com.rpgportugal.orthanc.kt.persistence.dto.emoji.Emoji
-import com.rpgportugal.orthanc.kt.persistence.dto.job.JobConfiguration
-import com.rpgportugal.orthanc.kt.persistence.dto.job.RoleAwardConfiguration
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.application.db.SqlApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.emoji.db.SqlEmojiRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.job.JobRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.job.db.SqlJobRepository
+import jakarta.persistence.Entity
 import jakarta.persistence.EntityManager
+import jakarta.persistence.Persistence
 import org.hibernate.SessionFactory
 import org.hibernate.cfg.Configuration
 import org.hibernate.hikaricp.internal.HikariCPConnectionProvider
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import org.reflections.Reflections
+import org.reflections.scanners.TypeAnnotationsScanner
+
 
 object DbModule : DepModule, Logging {
 
@@ -51,12 +52,19 @@ object DbModule : DepModule, Logging {
             )
         }
 
+        val persistenceClasses =
+            Reflections("com.rpgportugal.orthanc.kt.persistence.dto")
+                .getTypesAnnotatedWith(Entity::class.java) ?: emptyList()
+
         return Configuration()
             .addProperties(properties)
-            .addAnnotatedClass(Application::class.java)
-            .addAnnotatedClass(Emoji::class.java)
-            .addAnnotatedClass(JobConfiguration::class.java)
-            .addAnnotatedClass(RoleAwardConfiguration::class.java)
+            .let {
+                var cfg = it
+                for (cls in persistenceClasses) {
+                    cfg = cfg.addAnnotatedClass(cls)
+                }
+                cfg
+            }
             .buildSessionFactory()
             ?: throw Exception("Unable to build session factory")
 
