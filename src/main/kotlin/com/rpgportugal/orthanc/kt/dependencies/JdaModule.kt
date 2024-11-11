@@ -22,7 +22,7 @@ object JdaModule : DepModule, Logging {
             val propertiesLoader = get<PropertiesLoader>()
 
             val applicationProperties =
-                when (val result = propertiesLoader.load("env/application.properties")) {
+                when (val result = propertiesLoader.load("app.properties")) {
                     is Either.Right -> result.value
                     is Either.Left -> {
                         val error = result.value
@@ -54,6 +54,9 @@ object JdaModule : DepModule, Logging {
                         when (error) {
                             is DbError.EntityNotFoundError<*> ->
                                 throw Exception("Entity ${error.entityName} with id = ${error.id} not found")
+
+                            is DbError.EntityNotUnique<*> ->
+                                throw Exception("Entity ${error.entityName} with id = ${error.id} not unique")
 
                             is ThrowableError<*> ->
                                 throw error.exception

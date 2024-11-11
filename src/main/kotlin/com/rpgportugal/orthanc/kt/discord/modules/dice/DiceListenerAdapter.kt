@@ -37,7 +37,7 @@ class DiceListenerAdapter(
             onRoll.cancel()
             return null
         } catch (exception: Exception) {
-            log.error("tryClose - failed to close",exception)
+            log.error("tryClose - failed to close", exception)
             return ThrowableError(exception)
         }
     }

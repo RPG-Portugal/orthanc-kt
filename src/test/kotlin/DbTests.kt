@@ -6,8 +6,8 @@ import org.ktorm.database.Database
 class DbTests {
 
     @Test
-    fun dbBasic(){
-        val database = Database.connect(url="")
+    fun dbBasic() {
+        val database = Database.connect(url = "")
         val repo = SqlJobRepository(database)
         repo.getSql("job1")
     }

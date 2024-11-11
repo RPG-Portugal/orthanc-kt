@@ -4,7 +4,7 @@ import com.rpgportugal.orthanc.kt.persistence.dto.emoji.Emoji
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "role_award_configuration")
+@Table(name = "otk_role_award_configuration")
 open class RoleAwardConfiguration : JobConfiguration() {
 
     @Column(name = "role_id", nullable = false)
@@ -14,14 +14,14 @@ open class RoleAwardConfiguration : JobConfiguration() {
     open var adminAwardRoleId: Long = 0
 
     @Column(name = "threshold", nullable = false)
-    open var threshold: Long =  0
+    open var threshold: Long = 0
 
     @Column(name = "warning_channel_id", nullable = false)
     open var warningChannelId: Long = 0
 
-    @Column(name="emoji_id", nullable = false)
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "key")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "key", targetEntity = Emoji::class)
     open var emojis = mutableListOf<Emoji>()
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is RoleAwardConfiguration) return false

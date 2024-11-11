@@ -1,2 +1,6 @@
 app.id=1 #Long - apple database identifier
-app.db.url #String - jdbc path to sql database
+
+# hibernate properties
+is.sqlite=true #Boolean - set true if using sqlite
+hibernate.connection.url=jdbc:sqlite:/path/to/db/db.sqlite #String - url for database
+hibernate.hbm2ddl.auto=update #String - sql model construction mode

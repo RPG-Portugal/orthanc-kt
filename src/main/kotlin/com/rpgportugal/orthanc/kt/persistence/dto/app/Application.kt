@@ -3,7 +3,7 @@ package com.rpgportugal.orthanc.kt.persistence.dto.app
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "application")
+@Table(name = "otk_application")
 open class Application {
 
     @Id
@@ -14,8 +14,9 @@ open class Application {
     @Column(name = "name", nullable = false)
     open var name: String = ""
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "token", nullable = false)
     open var token: String = ""
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Application) return false

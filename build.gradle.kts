@@ -25,8 +25,9 @@ dependencies {
     implementation("net.dv8tion:JDA:${properties["jda.version"]}")
     implementation("club.minnced:jda-ktx:${properties["jda.ktx.version"]}")
     implementation("jakarta.persistence:jakarta.persistence-api:${properties["jakarta.persistence.version"]}")
-    implementation("com.mchange:c3p0:0.10.1")
     implementation("org.hibernate.orm:hibernate-core:${properties["hibernate.version"]}")
+    implementation("org.hibernate.orm:hibernate-hikaricp:${properties["hibernate.version"]}")
+    implementation("org.hibernate.orm:hibernate-community-dialects:6.5.2.Final")
     implementation("org.xerial:sqlite-jdbc:${properties["sqlite.driver.version"]}")
     implementation("org.quartz-scheduler:quartz:${properties["quartz.version"]}")
     //Bot Module Dependencies

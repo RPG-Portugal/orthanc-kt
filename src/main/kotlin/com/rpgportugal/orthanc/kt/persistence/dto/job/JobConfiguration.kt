@@ -3,8 +3,8 @@ package com.rpgportugal.orthanc.kt.persistence.dto.job
 import jakarta.persistence.*
 
 @Entity
-@MappedSuperclass
-@Table(name = "job_configuration")
+@Inheritance(strategy = InheritanceType.JOINED)
+@Table(name = "otk_job_configuration")
 open class JobConfiguration {
 
     @Id
@@ -23,6 +23,7 @@ open class JobConfiguration {
 
     @Column(name = "cron_expression", nullable = false)
     open var cronExpression: String = ""
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is JobConfiguration) return false
