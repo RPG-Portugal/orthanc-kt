@@ -6,6 +6,8 @@ import com.rpgportugal.orthanc.kt.error.PropertiesLoadError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
+import com.rpgportugal.orthanc.kt.util.EitherExtensions.toLeft
+import com.rpgportugal.orthanc.kt.util.EitherExtensions.toRight
 import java.util.*
 
 class ResourcePropertiesLoader(private val classLoader: ClassLoader) : PropertiesLoader {
@@ -27,11 +29,11 @@ class ResourcePropertiesLoader(private val classLoader: ClassLoader) : Propertie
                 stream.use {
                     val p = Properties()
                     p.load(it)
-                    Either.Right(p)
+                    p.toRight()
                 }
             } else {
                 log.error("Error while loading $path")
-                Either.Left(PropertiesLoadError.NullInputStreamError(path, "File not found"))
+                PropertiesLoadError.NullInputStreamError(path, "File not found").toLeft()
             }
         }
     }

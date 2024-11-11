@@ -3,6 +3,7 @@ package com.rpgportugal.orthanc.kt.scheduling
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.dependencies.DepModule
 import com.rpgportugal.orthanc.kt.error.SchedulerError
+import com.rpgportugal.orthanc.kt.util.EitherExtensions.toLeft
 import com.rpgportugal.orthanc.kt.util.TryCloseable
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -44,18 +45,16 @@ class OrthancScheduler : Scheduler {
         val scheduleJob = scheduleJob(jobDetail, trigger)
 
         return if (scheduleJob != null) {
-            Either.Left(SchedulerError.FailedToSchedule(jobName))
+            SchedulerError.FailedToSchedule(jobName).toLeft()
         } else {
-            Either.Right(
-                TryCloseable {
-                    val isClosed = quartzScheduler.unscheduleJob(trigger.key)
-                    if (isClosed) {
-                        null
-                    } else {
-                        SchedulerError.FailedToUnschedule(jobName)
-                    }
+            TryCloseable {
+                val isClosed = quartzScheduler.unscheduleJob(trigger.key)
+                if (isClosed) {
+                    null
+                } else {
+                    SchedulerError.FailedToUnschedule(jobName)
                 }
-            )
+            }.asResult()
         }
     }
 
