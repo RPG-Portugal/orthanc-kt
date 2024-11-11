@@ -6,7 +6,6 @@ import com.rpgportugal.orthanc.kt.error.BotModuleError
 import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
-import com.rpgportugal.orthanc.kt.persistence.dto.module.SpamCatcherConfiguration
 import com.rpgportugal.orthanc.kt.persistence.repository.module.BotModuleConfigurationRepository
 import com.rpgportugal.orthanc.kt.scheduling.Scheduler
 import com.rpgportugal.orthanc.kt.util.TryCloseable
@@ -17,16 +16,6 @@ class SpamCatcherModule(
     private val botModuleConfigurationRepository: BotModuleConfigurationRepository,
     private val jda: JDA
 ) : BotModule, Loggable {
-
-    /*
-        private val schedulerGroupName = "SpamCatcher"
-        private val triggerName = "sendWarnMessageTrigger"
-        private val jobName = "sendWarnMessageJob"
-
-        private var linkRegex: String? = null
-        private var honeypotChannelId: String? = null
-        private var warningChannelId: String? = null
-        private var cron: String = "0 *///5 * * * ? *"
 
     override fun getName(): String = "spam-catcher"
 

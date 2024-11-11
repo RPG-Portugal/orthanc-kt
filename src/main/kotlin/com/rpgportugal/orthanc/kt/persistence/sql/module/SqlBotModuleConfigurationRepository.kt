@@ -33,8 +33,7 @@ class SqlBotModuleConfigurationRepository(
     override fun getSpamCatcherConfiguration(): Either<DbError, SpamCatcherConfiguration> {
         val query =
             "select SCC from SpamCatcherConfiguration SCC " +
-                    "join fetch Emoji E " +
-                    "join fetch JobConfiguration " +
+                    "join fetch JobConfiguration JC on SCC.jobConfiguration.id = JC.id " +
                     "where SCC.id = 1"
 
         val cls = SpamCatcherConfiguration::class.java

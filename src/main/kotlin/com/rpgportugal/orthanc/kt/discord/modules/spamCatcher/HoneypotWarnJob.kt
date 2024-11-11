@@ -9,7 +9,7 @@ class HoneypotWarnJob : Job, Loggable {
     override fun execute(context: JobExecutionContext?) {
         val jobDataMap = context?.jobDetail?.jobDataMap
         val jda = (jobDataMap?.get("jda") ?: return) as JDA
-        val honeypotChannelId = jobDataMap.getString("honeypotChannelId") ?: return
+        val honeypotChannelId = jobDataMap.getLong("honeypotChannelId")
 
         val honeypotChannel = jda.getTextChannelById(honeypotChannelId)
         honeypotChannel?.sendMessage("**NÃO ESCREVAM NESTE CANAL** Escrita neste canal resulta num soft ban! Isto é um canal anti-bots, mutem o canal por favor!")
