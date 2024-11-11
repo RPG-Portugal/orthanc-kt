@@ -18,7 +18,6 @@ class SqlBotModuleConfigurationRepository(
     override fun getRoleAwardConfiguration(): Either<DbError, RoleAwardConfiguration> {
         val query =
             "select RA from RoleAwardConfiguration RA " +
-                    "join fetch Emoji E " +
                     "join fetch JobConfiguration JC on RA.jobConfiguration.id = JC.id " +
                     "where RA.id = 1"
 
