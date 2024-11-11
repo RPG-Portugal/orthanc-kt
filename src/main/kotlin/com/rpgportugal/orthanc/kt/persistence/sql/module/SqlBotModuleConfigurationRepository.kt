@@ -7,7 +7,7 @@ import com.rpgportugal.orthanc.kt.persistence.dto.module.RoleAwardConfiguration
 import com.rpgportugal.orthanc.kt.persistence.dto.module.SpamCatcherConfiguration
 import com.rpgportugal.orthanc.kt.persistence.dto.module.ThreadUpdateConfiguration
 import com.rpgportugal.orthanc.kt.persistence.repository.module.BotModuleConfigurationRepository
-import com.rpgportugal.orthanc.kt.persistence.sql.util.QueryUtil
+import com.rpgportugal.orthanc.kt.persistence.sql.util.QueryUtil.getSingleIdValue
 import jakarta.persistence.EntityManager
 
 
@@ -22,12 +22,9 @@ class SqlBotModuleConfigurationRepository(
                     "join fetch Emoji EM on RA.emoji.key = EM.key " +
                     "where RA.id = 1 "
 
-        val cls = RoleAwardConfiguration::class.java
-
-        val typedQuery =
-            entityManager.createQuery(query, cls)
-
-        return QueryUtil.getSingleIdValue(typedQuery, cls, 1L)
+        return entityManager
+            .createQuery(query, RoleAwardConfiguration::class.java)
+            .getSingleIdValue(1L)
     }
 
     override fun getSpamCatcherConfiguration(): Either<DbError, SpamCatcherConfiguration> {
@@ -36,22 +33,18 @@ class SqlBotModuleConfigurationRepository(
                     "join fetch JobConfiguration JC on SCC.jobConfiguration.id = JC.id " +
                     "where SCC.id = 1"
 
-        val cls = SpamCatcherConfiguration::class.java
-        val typedQuery = entityManager.createQuery(query, cls)
-
-        return QueryUtil.getSingleIdValue(typedQuery, cls)
+        return entityManager
+            .createQuery(query, SpamCatcherConfiguration::class.java)
+            .getSingleIdValue(1L)
     }
 
     override fun getThreadUpdateConfiguration(): Either<DbError, ThreadUpdateConfiguration> {
         val query =
             "select TUC from ThreadUpdateConfiguration TUC where TUC.id = 1"
 
-        val cls = ThreadUpdateConfiguration::class.java
-
-        val typedQuery =
-            entityManager.createQuery(query, cls)
-
-        return QueryUtil.getSingleIdValue(typedQuery, cls, 1L)
+        return entityManager
+            .createQuery(query, ThreadUpdateConfiguration::class.java)
+            .getSingleIdValue(1L)
     }
 
 

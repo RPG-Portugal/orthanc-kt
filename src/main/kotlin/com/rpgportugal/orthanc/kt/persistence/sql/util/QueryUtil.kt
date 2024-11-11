@@ -11,13 +11,14 @@ import jakarta.persistence.TypedQuery
 
 object QueryUtil : Loggable {
 
-    fun <T> getSingleIdValue(typedQuery: TypedQuery<T>, entityClass: Class<T>): Either<DbError, T> {
-        return getSingleIdValue(typedQuery, entityClass, null)
+    inline fun <reified T> TypedQuery<T>.getSingleIdValue(): Either<DbError, T> {
+        return getSingleIdValue(null)
     }
 
-    fun <I, T> getSingleIdValue(typedQuery: TypedQuery<T>, entityClass: Class<T>, id: I?): Either<DbError, T> {
+    inline fun <I, reified T> TypedQuery<T>.getSingleIdValue(id: I?): Either<DbError, T> {
+        val entityClass = T::class.java
         try {
-            return Either.Right(typedQuery.singleResult)
+            return Either.Right(singleResult)
         } catch (e: NoResultException) {
             log.error("getSingleIdValue - Failed to find entity with id = {}", id, e)
             return Either.Left(
