@@ -137,7 +137,7 @@ class DiceListenerAdapter(
                 if (this.results.isNotEmpty())
                     this.results.joinToString(", ") { it.prettyPrint() } + " = ${this.value}"
                 else
-                    "[dF] ${this.value}"
+                    "[df] ${this.value}"
             }
 
             is MathExpression -> {
