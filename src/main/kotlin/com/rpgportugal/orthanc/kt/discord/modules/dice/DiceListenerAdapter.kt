@@ -80,7 +80,8 @@ class DiceListenerAdapter(
                     try {
                         val diceEmoji = jda.getEmojiById(diceEmojiId)
                         diceEmoji?.asMention ?: default
-                    } catch (_: Exception) {
+                    } catch (e: Exception) {
+                        log.error("Failed to get emoji for {} / {}", it.key, it.value, e)
                         default
                     }
                 }.forEach {
