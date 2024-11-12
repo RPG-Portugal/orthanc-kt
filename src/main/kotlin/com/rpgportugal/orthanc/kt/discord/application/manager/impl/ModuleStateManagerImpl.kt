@@ -4,8 +4,8 @@ import arrow.core.Either
 import arrow.core.mapNotNull
 import com.rpgportugal.orthanc.kt.discord.application.manager.ModuleStateManager
 import com.rpgportugal.orthanc.kt.discord.module.BotModule
-import com.rpgportugal.orthanc.kt.error.AppStateError
 import com.rpgportugal.orthanc.kt.error.DomainError
+import com.rpgportugal.orthanc.kt.error.ModuleStateError
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.util.TryCloseable
@@ -17,16 +17,15 @@ class ModuleStateManagerImpl(
     private val stateManager = StateManager(this, botModules)
 
     override fun start(moduleName: String): DomainError? {
-        return stateManager.accessState { runningMods ->
-            val stopResult = stopInternal(moduleName, runningMods)
-            if (stopResult != null) {
-                return@accessState stopResult
-            }
+        val module = botModules[moduleName] ?: run {
+            log.error("start - No such module: {}", moduleName)
+            return ModuleStateError.ModuleDoesNotExist(moduleName)
+        }
 
-            val module = botModules[moduleName]
-            if (module == null) {
-                log.warn("No such module: {}", moduleName)
-                return@accessState null
+        return stateManager.accessState { runningMods ->
+            stopInternal(moduleName, runningMods)?.let { error ->
+                log.error("start - Failed to stop module: {}", error.message)
+                return@accessState error
             }
 
             when (val result = module.start(this)) {
@@ -52,19 +51,29 @@ class ModuleStateManagerImpl(
     }
 
     override fun failIfNotRunning(moduleName: String): DomainError? {
+        if (!botModules.containsKey(moduleName)) {
+            log.error("failIfNotRunning - module does not exist: {}", moduleName)
+            return ModuleStateError.ModuleDoesNotExist(moduleName)
+        }
         return stateManager.accessState { runningMods ->
             if (!runningMods.contains(moduleName)) {
-                AppStateError.ModuleNotRunning(moduleName)
+                log.error("failIfNotRunning - module {} is not running", moduleName)
+                ModuleStateError.ModuleNotRunning(moduleName)
             } else {
                 null
             }
-
         }
     }
 
     private fun stopInternal(moduleName: String, runningMods: MutableMap<String, TryCloseable>): DomainError? {
+        if (!runningMods.containsKey(moduleName)) {
+            log.error("stop - module {} is not running", moduleName)
+            return ModuleStateError.ModuleNotRunning(moduleName)
+        }
         return when (val result = runningMods.remove(moduleName)) {
-            is TryCloseable -> result.tryClose()
+            is TryCloseable -> result.tryClose()?.also {
+                log.error("stop - module {} failed to stop: {}", moduleName, it.message)
+            }
             else -> {
                 log.info("stop - Module {} not found", moduleName)
                 null

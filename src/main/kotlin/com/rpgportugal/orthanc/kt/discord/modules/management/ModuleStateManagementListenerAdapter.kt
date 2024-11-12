@@ -19,6 +19,7 @@ class ModuleStateManagementListenerAdapter(
     private val moduleStateManager: ModuleStateManager,
     private val permissionManager: PermissionManager,
     private val moduleStateManagementConfiguration: ModuleStateManagementConfiguration,
+    private val evokerModuleName: String,
 ) : CloseableListenerAdapter(), Loggable {
 
     private enum class AppManagementOperation {
@@ -45,7 +46,7 @@ class ModuleStateManagementListenerAdapter(
                 .getMember(UserSnowflake.fromId(msg.author.idLong))
                 ?: return
 
-        when (val res = permissionManager.hasPermission(Permission.ManageApp, member)) {
+        when (val res = permissionManager.hasPermission(Permission.ManageModuleState, member)) {
             is Either.Right -> {
                 if (!res.value) {
                     log.info("onMessageReceived - {} does not have permission to do this operation", member.nickname)
@@ -61,6 +62,11 @@ class ModuleStateManagementListenerAdapter(
 
         val command = cmd[0]
         val moduleName = cmd[1]
+
+        if (moduleName == this.evokerModuleName) {
+            log.warn("cannot evoke state commands on self: {}", moduleName)
+            return
+        }
 
         val (error, operation) = when (command) {
             "\$start" -> moduleStateManager.start(moduleName) to AppManagementOperation.Start

@@ -34,6 +34,7 @@ class ModuleStateManagement(
             moduleStateManager,
             permissionManager,
             configuration,
+            getName()
         )
 
         return TryCloseable { listenerAdapter.tryClose() }.toRight()
