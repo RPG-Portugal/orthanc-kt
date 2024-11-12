@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.rpgportugal"
-version = "1.0.0"
+version = "2.0.1"
 
 repositories {
     mavenCentral()
@@ -24,7 +24,11 @@ dependencies {
     implementation("io.insert-koin:koin-core-jvm:${properties["koin.version"]}")
     implementation("net.dv8tion:JDA:${properties["jda.version"]}")
     implementation("club.minnced:jda-ktx:${properties["jda.ktx.version"]}")
-    implementation("org.ktorm:ktorm-core:${properties["ktorm.version"]}")
+    implementation("jakarta.persistence:jakarta.persistence-api:${properties["jakarta.persistence.version"]}")
+    implementation("org.hibernate.orm:hibernate-core:${properties["hibernate.version"]}")
+    implementation("org.hibernate.orm:hibernate-hikaricp:${properties["hibernate.version"]}")
+    implementation("org.hibernate.orm:hibernate-community-dialects:${properties["hibernate.dialects.version"]}")
+    implementation("org.reflections:reflections:${properties["reflections.version"]}")
     implementation("org.xerial:sqlite-jdbc:${properties["sqlite.driver.version"]}")
     implementation("org.quartz-scheduler:quartz:${properties["quartz.version"]}")
     //Bot Module Dependencies

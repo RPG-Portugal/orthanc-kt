@@ -5,9 +5,4 @@ sealed interface PropertiesLoadError : DomainError {
         val fileName: String,
         override val message: String,
     ) : PropertiesLoadError
-
-    data class MissingPropertyError(
-        val propertyName: String,
-        override val message: String,
-    ) : PropertiesLoadError
 }

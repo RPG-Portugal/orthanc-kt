@@ -6,4 +6,10 @@ sealed interface DbError : DomainError {
         val id: Id,
         override val message: String,
     ) : DbError
+
+    class EntityNotUnique<Id>(
+        val entityName: String,
+        val id: Id,
+        override val message: String,
+    ) : DbError
 }

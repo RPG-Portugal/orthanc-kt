@@ -1,5 +1,8 @@
 package com.rpgportugal.orthanc.kt.scheduling
 
+import arrow.core.Either
+import com.rpgportugal.orthanc.kt.error.SchedulerError
+import com.rpgportugal.orthanc.kt.util.TryCloseable
 import org.quartz.Job
 import org.quartz.JobDataMap
 import org.quartz.JobDetail
@@ -17,5 +20,5 @@ interface Scheduler {
         cron: String,
         jobClass: Class<out Job>,
         jobData: JobDataMap,
-    ): Date?
+    ): Either<SchedulerError, TryCloseable>
 }

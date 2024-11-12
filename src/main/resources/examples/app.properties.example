@@ -1,0 +1,7 @@
+# hibernate properties
+
+# url for database
+hibernate.connection.url=jdbc:sqlite:/path/to/db/db.sqlite
+
+# sql model construction mode
+hibernate.hbm2ddl.auto=update
