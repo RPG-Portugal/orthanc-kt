@@ -62,7 +62,7 @@ class ModuleStateManagementListenerAdapter(
         when (val res = permissionManager.hasPermission(Permission.ManageModuleState, member)) {
             is Either.Right -> {
                 if (!res.value) {
-                    log.info("onMessageReceived - {} does not have permission to do this operation", member.asMention)
+                    log.error("onMessageReceived - {} does not have permission to do this operation", member.asMention)
                     return
                 }
             }
