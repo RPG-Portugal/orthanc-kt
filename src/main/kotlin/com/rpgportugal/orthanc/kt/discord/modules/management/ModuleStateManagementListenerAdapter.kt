@@ -34,30 +34,9 @@ class ModuleStateManagementListenerAdapter(
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
         val msg = event.message
-        val content = msg.contentStripped
-        val cmd = content.lowercase().split(' ')
-
+        val cmd = msg.contentStripped.lowercase().split(' ')
         if (cmd.size != 2) {
             return
-        }
-
-        val member =
-            msg.guild
-                .getMember(UserSnowflake.fromId(msg.author.idLong))
-                ?: return
-
-        when (val res = permissionManager.hasPermission(Permission.ManageModuleState, member)) {
-            is Either.Right -> {
-                if (!res.value) {
-                    log.info("onMessageReceived - {} does not have permission to do this operation", member.nickname)
-                    return
-                }
-            }
-
-            is Either.Left -> {
-                log.error("onMessageReceived - failed to retrieve permissions - {}", res.value.message)
-                throw Exception(res.value.message)
-            }
         }
 
         val command = cmd[0]
@@ -73,6 +52,25 @@ class ModuleStateManagementListenerAdapter(
             "\$stop" -> moduleStateManager.stop(moduleName) to AppManagementOperation.Stop
             "\$check" -> moduleStateManager.failIfNotRunning(moduleName) to AppManagementOperation.Check
             else -> return
+        }
+
+        val member =
+            msg.guild
+                .getMember(UserSnowflake.fromId(msg.author.idLong))
+                ?: return
+
+        when (val res = permissionManager.hasPermission(Permission.ManageModuleState, member)) {
+            is Either.Right -> {
+                if (!res.value) {
+                    log.info("onMessageReceived - {} does not have permission to do this operation", member.asMention)
+                    return
+                }
+            }
+
+            is Either.Left -> {
+                log.error("onMessageReceived - failed to retrieve permissions - {}", res.value.message)
+                throw Exception(res.value.message)
+            }
         }
 
         val text =
