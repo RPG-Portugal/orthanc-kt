@@ -71,18 +71,27 @@ class SpamCatcherListenerAdapter(
 
             if (regex.matches(message.contentRaw)) {
                 val warningChannel = event.jda.getTextChannelById(configuration.warningChannelId)
-                warningChannel?.sendMessage(":x: Bani @ ${author.effectiveName} por escrever o seguinte no canal do mal: ${message.contentRaw}")?.queue()
+                warningChannel?.sendMessage(":x: Bani @ ${author.effectiveName} por escrever o seguinte no canal do mal: ${message.contentRaw}")
+                    ?.queue()
 
-                event.author.openPrivateChannel().submit()
-                    .thenCompose { channel -> channel.sendMessage("Foste removid@ do servidor por enviar mensagens onde não era suposto. Se isto foi um erro, podes voltar a tentar entrar através do site do RPGPortugal. https://rpgportugal.com/").submit() }
-                    .thenCompose { _ -> event.guild.ban(listOf(author), Duration.ofHours(1L)).submit() }
-                    .thenCompose { _ -> event.guild.unban(author).submit()}
+                val channel = event.author.openPrivateChannel().complete()
+                try {
+                    channel.sendMessage("Foste removid@ do servidor por enviar mensagens onde não era suposto. Se isto foi um erro, podes voltar a tentar entrar através do site do RPGPortugal. https://rpgportugal.com/")
+                            .complete()
+                } catch (e: Exception) {
+                    log.error("Erro a enviar mensagem de autoban ao user @${author.name} : ${e.message}")
+                    warningChannel?.sendMessage("Erro a enviar mensagem de autoban ao user @${author.name} : ${e.message}")?.queue()
+                }
+
+                event.guild.ban(listOf(author), Duration.ofHours(1L)).submit()
+                    .thenCompose { _ -> event.guild.unban(author).submit() }
                     .whenComplete { _, error ->
-                        if(error != null) {
+                        if (error != null) {
                             log.error("Erro durante o autoban: ${error.message}")
                             warningChannel?.sendMessage("Erro durante o autoban: ${error.message}")?.queue()
                         }
                     }
+
             }
         }
 
