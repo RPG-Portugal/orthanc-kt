@@ -16,7 +16,8 @@ object Modules {
         SpamCatcherDepModule,
         ApplicationManagementDepModule,
         JdaModule,
-        ApplicationManagerModule
+        ApplicationManagerModule,
+        NewUserLookoutDepModule,
     ).map {
         it.module
     }
