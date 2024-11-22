@@ -3,6 +3,7 @@ package com.rpgportugal.orthanc.kt.persistence.sql.module
 import arrow.core.Either
 import com.rpgportugal.orthanc.kt.error.DbError
 import com.rpgportugal.orthanc.kt.logging.Loggable
+import com.rpgportugal.orthanc.kt.persistence.dto.module.NewUserLookoutConfiguration
 import com.rpgportugal.orthanc.kt.persistence.dto.module.RoleAwardConfiguration
 import com.rpgportugal.orthanc.kt.persistence.dto.module.SpamCatcherConfiguration
 import com.rpgportugal.orthanc.kt.persistence.dto.module.ThreadUpdateConfiguration
@@ -44,6 +45,15 @@ class SqlBotModuleConfigurationRepository(
 
         return entityManager
             .createQuery(query, ThreadUpdateConfiguration::class.java)
+            .getSingleIdValue(1L)
+    }
+
+    override fun getNewUserLookoutConfiguration(): Either<DbError, NewUserLookoutConfiguration> {
+        val query =
+            "select NULC from NewUserLookoutConfiguration NULC where NULC.id = 1"
+
+        return entityManager
+            .createQuery(query, NewUserLookoutConfiguration::class.java)
             .getSingleIdValue(1L)
     }
 
