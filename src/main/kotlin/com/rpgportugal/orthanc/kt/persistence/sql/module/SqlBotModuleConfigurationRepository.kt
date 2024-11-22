@@ -6,6 +6,7 @@ import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.persistence.dto.module.RoleAwardConfiguration
 import com.rpgportugal.orthanc.kt.persistence.dto.module.SpamCatcherConfiguration
 import com.rpgportugal.orthanc.kt.persistence.dto.module.ThreadUpdateConfiguration
+import com.rpgportugal.orthanc.kt.persistence.dto.module.WarnNewMemberRespondedConfiguration
 import com.rpgportugal.orthanc.kt.persistence.repository.module.BotModuleConfigurationRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.util.QueryUtil.getSingleIdValue
 import jakarta.persistence.EntityManager
@@ -44,6 +45,15 @@ class SqlBotModuleConfigurationRepository(
 
         return entityManager
             .createQuery(query, ThreadUpdateConfiguration::class.java)
+            .getSingleIdValue(1L)
+    }
+
+    override fun getWarnNewMemberRespondedConfiguration(): Either<DbError, WarnNewMemberRespondedConfiguration> {
+        val query =
+            "select WNMRC from WarnNewMemberRespondedConfiguration WNMRC where WNMRC.id = 1"
+
+        return entityManager
+            .createQuery(query, WarnNewMemberRespondedConfiguration::class.java)
             .getSingleIdValue(1L)
     }
 
