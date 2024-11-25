@@ -5,7 +5,8 @@
 /src/main/resources/db/
 /secret
 app.properties
-
+/.env
+/.env.production
 
 ### Emacs ###
 # -*- mode: gitignore; -*-
