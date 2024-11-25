@@ -1,10 +1,9 @@
 services:
   orthanc:
-    container_name: orthanc-kt
     network_mode: bridge
     restart: always
     environment:
       - DATABASE_URL=${DATABASE_URL}
     build:
-      context: .
-      dockerfile: ./Dockerfile
+      context: ../..
+      dockerfile: Dockerfile

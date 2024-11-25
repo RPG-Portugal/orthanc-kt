@@ -7,7 +7,7 @@
 app.properties
 /.env
 /.env.production
-
+.idea/runConfigurations/*
 ### Emacs ###
 # -*- mode: gitignore; -*-
 *~

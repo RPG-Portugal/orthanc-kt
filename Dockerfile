@@ -1,6 +1,6 @@
 FROM gradle:latest AS build
 WORKDIR /usr/app/
-COPY . .
+COPY ../.. .
 RUN gradle fatJar || return 0
 
 FROM eclipse-temurin:21
