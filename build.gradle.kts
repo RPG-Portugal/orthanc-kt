@@ -56,7 +56,6 @@ tasks {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         manifest {
             attributes("Main-Class" to "com.rpgportugal.orthanc.kt.Main")
-            //archiveFileName.set("orthanc-kt.jar")
         }
         from(configurations.runtimeClasspath.get()
             .onEach { println("add from dependencies: ${it.name}") }
