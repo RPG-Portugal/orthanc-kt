@@ -12,9 +12,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build Orthanc image
-        runs:
-          using: 'docker'
-          image: 'Dockerfile'
+        run: docker build -t orthanc-kt
+        
   deploy:
     needs: build
     runs-on: ubuntu-latest
