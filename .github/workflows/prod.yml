@@ -3,7 +3,8 @@ on:
     branches:
       - develop
 jobs:
-  build:
+  build-and-deploy:
+    environment: prod
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -18,24 +19,6 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build Fat Jar
         run: ./gradlew fatjar
-      - name: Upload Jar
-        uses: actions/upload-artifact@v4
-        with:
-          name: orthanc-kt-jar
-          path: ./build/libs/orthanc-kt-*-all.jar
-
-  deploy:
-    environment: prod
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Download file
-        uses: actions/download-artifact@v4
-        with:
-          name: orthanc-kt-jar
-          path: ./orthanc-kt-all.jar
       - name: Install sshpass
         run: sudo apt-get install sshpass
       - name: Copy Dockerfile
@@ -43,7 +26,7 @@ jobs:
       - name: Copy compose
         run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./compose/orthanc/compose.yaml ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc/compose/orthanc
       - name: Copy Jar
-        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no orthanc-kt-all.jar ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
+        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./build/libs/orthanc-kt-*-all.jar ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
