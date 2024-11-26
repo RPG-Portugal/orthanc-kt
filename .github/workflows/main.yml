@@ -35,7 +35,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: orthanc-kt-jar
-          path: ./orthanc-kt-*-all.jar
+          path: ./orthanc-kt-all.jar
       - name: Install sshpass
         run: sudo apt-get install sshpass
       - name: Copy Dockerfile
@@ -43,7 +43,7 @@ jobs:
       - name: Copy compose
         run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./compose/orthanc/compose.yaml ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc/compose/orthanc
       - name: Copy Jar
-        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} 'scp -o StrictHostKeyChecking=no orthanc-kt-*-all.jar ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc'
+        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} 'scp -o StrictHostKeyChecking=no orthanc-kt-all.jar ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc'
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
