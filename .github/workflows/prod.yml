@@ -30,7 +30,7 @@ jobs:
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.prod.RPGPT_IP }}
+          host: ${{ secrets.RPGPT_IP }}
           username: docker-user
           password: ${{ secrets.RPGPT_PASSWORD }}
           script: |
