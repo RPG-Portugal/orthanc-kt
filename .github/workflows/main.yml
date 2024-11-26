@@ -41,7 +41,7 @@ jobs:
       - name: Copy Dockerfile
         run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./Dockerfile ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
       - name: Copy compose
-        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./compose/orthanc/compose.yml ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc/compose/orthanc
+        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./compose/orthanc/compose.yaml ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc/compose/orthanc
       - name: Copy Jar
         run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no orthanc-kt-\*-all.jar ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
       - name: Deploy
