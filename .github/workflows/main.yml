@@ -12,7 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build Orthanc image
-        run: docker build -t orthanc-kt
+        run: docker build -t orthanc-kt .
         
   deploy:
     needs: build
