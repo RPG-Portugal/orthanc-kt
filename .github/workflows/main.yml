@@ -49,4 +49,4 @@ jobs:
           script: |
             cd ~/orthanc
             docker-compose down
-            docker compose --env-file .env -p orthanc up -d
+            docker compose -f orthanc/compose.yaml --env-file .env -p orthanc up -d
