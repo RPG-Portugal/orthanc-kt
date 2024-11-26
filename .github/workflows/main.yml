@@ -40,10 +40,10 @@ jobs:
         run: sudo apt-get install sshpass
       - name: Copy Dockerfile
         run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./Dockerfile ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
+      - name: Copy compose
+        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./compose/orthanc/docker-compose.yml ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc/compose/orthanc
       - name: Copy Jar
         run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no orthanc-kt-\*-all.jar ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
-      - name: Copy compose
-        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./compose/orthanc/docker-compose.yml ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -52,5 +52,5 @@ jobs:
           password: ${{ secrets.RPGPT_PASSWORD }}
           script: |
             cd ~/orthanc
-            docker-compose -f compose.yaml --env-file production.env down
-            docker compose -f compose.yaml --env-file production.env -p orthanc up -d
+            docker-compose -f /compose/orthanc/compose.yaml --env-file production.env down
+            docker compose -f /compose/orthanc/compose.yaml --env-file production.env -p orthanc up -d
