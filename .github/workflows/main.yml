@@ -43,7 +43,7 @@ jobs:
       - name: Copy compose
         run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./compose/orthanc/compose.yaml ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc/compose/orthanc
       - name: Copy Jar
-        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no 'orthanc-kt-*-all.jar' ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
+        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} 'scp -o StrictHostKeyChecking=no orthanc-kt-*-all.jar ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc'
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -52,5 +52,5 @@ jobs:
           password: ${{ secrets.RPGPT_PASSWORD }}
           script: |
             cd ~/orthanc
-            docker-compose -f /compose/orthanc/compose.yaml --env-file production.env down
+            docker compose -f /compose/orthanc/compose.yaml --env-file production.env down
             docker compose -f /compose/orthanc/compose.yaml --env-file production.env -p orthanc up -d
