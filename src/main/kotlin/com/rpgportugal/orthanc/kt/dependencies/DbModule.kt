@@ -1,20 +1,18 @@
 package com.rpgportugal.orthanc.kt.dependencies
 
-import arrow.core.Either
-import com.rpgportugal.orthanc.kt.configuration.PropertiesLoader
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.job.JobRepository
-import com.rpgportugal.orthanc.kt.persistence.repository.module.ModuleStateManagementConfigurationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.module.BotModuleConfigurationRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.module.ModuleStateManagementConfigurationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.permission.RolePermissionRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.application.SqlApplicationRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.emoji.SqlEmojiRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.job.SqlJobRepository
-import com.rpgportugal.orthanc.kt.persistence.sql.module.SqlModuleStateManagementConfigurationRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.module.SqlBotModuleConfigurationRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.module.SqlModuleStateManagementConfigurationRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.permission.SqlRolePermissionRepository
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityManager
@@ -26,6 +24,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.reflections.Reflections
+import java.util.*
 
 
 object DbModule : DepModule, Loggable {
@@ -45,16 +44,13 @@ object DbModule : DepModule, Loggable {
         return sessionFactory.createEntityManager()
     }
 
-    private fun buildSessionFactory(propertiesLoader: PropertiesLoader): SessionFactory {
-        val properties = when (val either = propertiesLoader.load("app.properties")) {
-            is Either.Right -> either.value
-            is Either.Left -> {
-                log.error("Failed to load app.properties: {}", either.value.message)
-                throw Exception("Failed to load app.properties ${either.value.message}")
-            }
+    private fun buildSessionFactory(): SessionFactory {
+        val jdbcUrl = System.getenv("DATABASE_URL") ?: let {
+            log.error("environment variable DATABASE_URL is not set")
+            throw Exception("environment variable DATABASE_URL is not set")
         }
 
-        properties.run {
+        val properties = Properties().apply {
             setProperty(
                 "hibernate.connection.provider_class",
                 HikariCPConnectionProvider::class.java.name
@@ -62,6 +58,10 @@ object DbModule : DepModule, Loggable {
             setProperty(
                 "hibernate.hbm2ddl.auto",
                 "update"
+            )
+            setProperty(
+                "hibernate.connection.url",
+                jdbcUrl
             )
         }
 

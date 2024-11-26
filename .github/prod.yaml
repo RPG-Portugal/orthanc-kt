@@ -1,0 +1,37 @@
+on:
+  push:
+    branches:
+      - develop
+env:
+  DATABASE_URL=${secrets.DATABASE_URL}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build Orthanc image
+        run:
+          using: 'docker'
+          image: 'Dockerfile'
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install sshpass
+        run: sudo apt-get install sshpass
+      - name: Copy Image and Compose file
+        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no docker-compose.yml root@${{ secrets.RPGPT_IP }}:~
+      - name: Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.RPGPT_IP }}
+          username: docker-user
+          password: ${{ secrets.RPGPT_PASSWORD }}
+          script: |
+            cd ~/orthanc
+            docker-compose down
+            docker compose --env-file .env -p orthanc up -d
