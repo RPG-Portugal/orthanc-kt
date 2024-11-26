@@ -35,7 +35,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: orthanc-kt-jar
-          path: ./build/libs/orthanc-kt-*-all.jar
+          path: ./orthanc-kt-*-all.jar
       - name: Install sshpass
         run: sudo apt-get install sshpass
       - name: Copy Dockerfile
