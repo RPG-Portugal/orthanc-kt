@@ -3,7 +3,7 @@ on:
     branches:
       - develop
 env:
-  DATABASE_URL: ${secrets.DATABASE_URL}
+  DATABASE_URL: ${secrets.prod.DATABASE_URL}
 
 jobs:
   build:
@@ -41,11 +41,11 @@ jobs:
       - name: Install sshpass
         run: sudo apt-get install sshpass
       - name: Copy Image
-        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no compose/orthanc/docker-compose.yml Dockerfile orthanc-kt-*-all.jar root@${{ secrets.RPGPT_IP }}:~/orthanc
+        run: sshpass -v -p ${{ secrets.prod.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no compose/orthanc/docker-compose.yml Dockerfile orthanc-kt-*-all.jar root@${{ secrets.prod.RPGPT_IP }}:~/orthanc
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.RPGPT_IP }}
+          host: ${{ secrets.prod.RPGPT_IP }}
           username: docker-user
           password: ${{ secrets.RPGPT_PASSWORD }}
           script: |
