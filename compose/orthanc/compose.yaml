@@ -1,6 +1,6 @@
 services:
   orthanc:
-    network_mode: bridge
+    network_mode: host
     restart: always
     environment:
       - DATABASE_URL=${DATABASE_URL}
