@@ -2,9 +2,6 @@ on:
   push:
     branches:
       - develop
-env:
-  DATABASE_URL: ${secrets.prod.DATABASE_URL}
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,6 +25,7 @@ jobs:
           path: ./build/libs/orthanc-kt-*-all.jar
 
   deploy:
+    environment: prod
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -41,7 +39,7 @@ jobs:
       - name: Install sshpass
         run: sudo apt-get install sshpass
       - name: Copy Image
-        run: sshpass -v -p ${{ secrets.prod.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no compose/orthanc/docker-compose.yml Dockerfile orthanc-kt-*-all.jar root@${{ secrets.prod.RPGPT_IP }}:~/orthanc
+        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no compose/orthanc/docker-compose.yml Dockerfile orthanc-kt-*-all.jar {{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
