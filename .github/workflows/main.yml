@@ -39,7 +39,7 @@ jobs:
       - name: Install sshpass
         run: sudo apt-get install sshpass
       - name: Copy Image
-        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no compose/orthanc/docker-compose.yml Dockerfile orthanc-kt-*-all.jar {{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
+        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no compose/orthanc/docker-compose.yml Dockerfile orthanc-kt-*-all.jar ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -49,4 +49,4 @@ jobs:
           script: |
             cd ~/orthanc
             docker-compose down
-            docker compose -f orthanc/compose.yaml --env-file .env -p orthanc up -d
+            docker compose -f compose.yaml --env-file production.env -p orthanc up -d
