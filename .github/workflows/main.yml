@@ -10,20 +10,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Build Orthanc image
-        run: docker build -t orthanc-kt .
-        
+        uses: actions/checkout@v4
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build Fat Jar
+        run: ./gradlew fatjar
+      - name: Upload Jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: orthanc-kt-jar
+          path: ./build/libs/orthanc-kt-*-all.jar
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+      - name: Download file
+        uses: actions/download-artifact@v4
+        with:
+          name: orthanc-kt-jar
+          path: ./build/libs/orthanc-kt-*-all.jar
       - name: Install sshpass
         run: sudo apt-get install sshpass
-      - name: Copy Image and Compose file
-        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no docker-compose.yml root@${{ secrets.RPGPT_IP }}:~
+      - name: Copy Image
+        run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no compose/orthanc/docker-compose.yml Dockerfile orthanc-kt.jar root@${{ secrets.RPGPT_IP }}:~/orthanc
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
