@@ -27,7 +27,7 @@ jobs:
           password: ${{ secrets.RPGPT_PASSWORD }}
           script: |
             cd ./orthanc
-            mv ./orthanc-kt-*-all.jar ./deploy-history/deploy-$(date -d "today" +"%Y%m%d%H%M")/ || true
+            mv ./build/libs/orthanc-kt-*-all.jar ./deploy-history/deploy-$(date -d "today" +"%Y%m%d%H%M")/ || true
       - name: Install sshpass
         run: sudo apt-get install sshpass
       - name: Copy Dockerfile
