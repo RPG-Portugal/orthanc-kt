@@ -31,10 +31,11 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.RPGPT_IP }}
-          username: docker-user
+          username: ${{ secrets.RPGPT_USER }}
           password: ${{ secrets.RPGPT_PASSWORD }}
           script: |
             cd ./orthanc
+            mv ./orthanc-kt-*-all.jar ./deploy-history/
             rm ./orthanc-kt-*-all.jar || true
             docker compose -f ./compose/orthanc/compose.yaml --env-file production.env down
             docker compose -f ./compose/orthanc/compose.yaml --env-file production.env -p orthanc up -d
