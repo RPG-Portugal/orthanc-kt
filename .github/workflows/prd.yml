@@ -19,6 +19,15 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build Fat Jar
         run: ./gradlew fatjar
+      - name: Move old Jar to deploy-history
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.RPGPT_IP }}
+          username: ${{ secrets.RPGPT_USER }}
+          password: ${{ secrets.RPGPT_PASSWORD }}
+          script: |
+            cd ./orthanc
+            mv ./orthanc-kt-*-all.jar ./deploy-history/deploy-$(date -d "today" +"%Y%m%d%H%M")/ || true
       - name: Install sshpass
         run: sudo apt-get install sshpass
       - name: Copy Dockerfile
@@ -27,7 +36,7 @@ jobs:
         run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./compose/orthanc/compose.yaml ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc/compose/orthanc
       - name: Copy Jar
         run: sshpass -v -p ${{ secrets.RPGPT_PASSWORD }} scp -o StrictHostKeyChecking=no ./build/libs/orthanc-kt-*-all.jar ${{ secrets.RPGPT_USER }}@${{ secrets.RPGPT_IP }}:~/orthanc/build/libs
-      - name: Deploy
+      - name: Docker Compose
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.RPGPT_IP }}
@@ -35,7 +44,6 @@ jobs:
           password: ${{ secrets.RPGPT_PASSWORD }}
           script: |
             cd ./orthanc
-            mv ./orthanc-kt-*-all.jar ./deploy-history/
             rm ./orthanc-kt-*-all.jar || true
             docker compose -f ./compose/orthanc/compose.yaml --env-file production.env down
             docker compose -f ./compose/orthanc/compose.yaml --env-file production.env -p orthanc up -d
