@@ -29,7 +29,7 @@ dependencies {
     implementation("org.hibernate.orm:hibernate-hikaricp:${properties["hibernate.version"]}")
     implementation("org.hibernate.orm:hibernate-community-dialects:${properties["hibernate.dialects.version"]}")
     implementation("org.reflections:reflections:${properties["reflections.version"]}")
-    implementation("org.xerial:sqlite-jdbc:${properties["sqlite.driver.version"]}")
+    implementation("org.postgresql:postgresql:${properties["postgresql.driver.version"]}")
     implementation("org.quartz-scheduler:quartz:${properties["quartz.version"]}")
     //Bot Module Dependencies
     implementation("dev.diceroll:dice-parser:${properties["diceparser.version"]}")
