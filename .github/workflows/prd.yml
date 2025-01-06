@@ -44,6 +44,5 @@ jobs:
           password: ${{ secrets.RPGPT_PASSWORD }}
           script: |
             cd ./orthanc
-            rm ./orthanc-kt-*-all.jar || true
-            docker compose -f ./compose/orthanc/compose.yaml --env-file production.env down
+            docker compose -f ./compose/orthanc/compose.yaml down --rmi 'all'
             docker compose -f ./compose/orthanc/compose.yaml --env-file production.env -p orthanc up -d
