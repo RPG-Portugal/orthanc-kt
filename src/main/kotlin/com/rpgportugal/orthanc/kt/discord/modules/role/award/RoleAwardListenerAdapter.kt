@@ -96,6 +96,7 @@ class RoleAwardListenerAdapter(
                 else
                     configuration.roleId
 
+            log.info("RoleAwardListenerAdapter - fetching role: {}", roleId)
 
             val role = getRoleFromEventGuild(event, roleId) ?: run {
                 log.error("Role {} not found", roleId)
@@ -107,11 +108,20 @@ class RoleAwardListenerAdapter(
                 return@queue
             }
 
-            event.guild.addRoleToMember(member, role).queue()
+            event.guild.addRoleToMember(member, role).queue({
+                val warningChannel =
+                    configuration.warningChannelId.run(event.jda::getTextChannelById)
 
-            val warningChannel = event.jda.getTextChannelById(configuration.warningChannelId)
-            warningChannel?.sendMessage(":lemon: Utilizador ${author.effectiveName} (@${author.name}) foi limonado (${message.jumpUrl}).")
-                ?.queue()
+                val message =
+                    ":lemon: Utilizador ${author.effectiveName} (@${author.name}) foi limonado (${message.jumpUrl})."
+
+                warningChannel?.sendMessage(message)?.queue()
+            },{
+                log.error("RoleAwardListenerAdapter - Failed to add role {} to {}",
+                    role.id,
+                    author.effectiveAvatarUrl
+                )
+            })
         }
     }
 

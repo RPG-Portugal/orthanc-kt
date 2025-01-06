@@ -10,6 +10,13 @@ class Main {
     companion object : Loggable {
         @JvmStatic
         fun main(args: Array<String>) {
+            val version =
+                javaClass.getPackage()
+                    .implementationVersion
+                    ?: "Dev"
+
+            log.info("Running version $version")
+
             log.info("main - starting dependency modules")
             val koin = startKoin { modules(Modules.modules) }.koin
 
