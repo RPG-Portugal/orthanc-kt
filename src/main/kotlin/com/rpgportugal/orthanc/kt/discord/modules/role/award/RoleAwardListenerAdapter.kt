@@ -78,14 +78,24 @@ class RoleAwardListenerAdapter(
             val startOfDay = OffsetDateTime.now().withHour(0).withMinute(0).withSecond(0)
             if (message.timeCreated.isBefore(startOfDay)) return@queue
 
-            val count = message.getReaction(event.emoji)?.count ?: 0
-            if (count < configuration.threshold) return@queue //Not enough emojis
+            val count = message.getReaction(event.emoji)?.count ?: run {
+                log.error(" RoleAwardListenerAdapter - Reaction for ${event.emoji.name} was not found")
+                return@queue
+            }
 
-            val author = event.jda.getUserById(event.messageAuthorIdLong)
-                ?: return@queue //User not found (probably left the server)
-            val member = event.guild.getMemberById(author.idLong)
+            log.info(" RoleAwardListenerAdapter - count is $count")
 
-            if (member == null) {
+            if (count < configuration.threshold) {
+                return@queue //Not enough emojis
+            }
+
+            val author = event.jda.getUserById(event.messageAuthorIdLong) ?: run {
+                log.error("RoleAwardListenerAdapter")
+                //User not found (probably left the server)
+                return@queue
+            }
+
+            val member = event.guild.getMemberById(author.idLong) ?: run {
                 log.error("RoleAwardListenerAdapter - No such member {} - ({})", author.name, author.effectiveAvatarUrl)
                 return@queue
             }
