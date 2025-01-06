@@ -2,5 +2,5 @@
 
 ## configuration
 
-check src/main/resources/examples to see configuration examples
-check src/main/resources/sql to see sql table create scripts
+* check src/main/resources/examples to see configuration examples
+* check src/main/kotlin/com/rpgportugal/orthanc/kt/persistence/dto to see the sql entities
