@@ -10,6 +10,8 @@ import com.rpgportugal.orthanc.kt.persistence.dto.module.RoleAwardConfiguration
 import com.rpgportugal.orthanc.kt.scheduling.Scheduler
 import com.rpgportugal.orthanc.kt.util.TryCloseable
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.Permission
+import net.dv8tion.jda.api.entities.Role
 import net.dv8tion.jda.api.entities.emoji.Emoji
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
 import org.quartz.JobDataMap
@@ -70,7 +72,6 @@ class RoleAwardListenerAdapter(
                     event.emoji.name.lowercase() == it.name.lowercase()
                 }
             }) return // Not the emoji we're looking for
-        val role = event.guild.getRoleById(configuration.roleId) ?: return // No role configured
 
         event.retrieveMessage().queue { message ->
 
@@ -83,16 +84,38 @@ class RoleAwardListenerAdapter(
             val author = event.jda.getUserById(event.messageAuthorIdLong)
                 ?: return@queue //User not found (probably left the server)
             val member = event.guild.getMemberById(author.idLong)
-            if (member?.roles?.any { it.position > role.position } == true) {
-                val adminRole =
-                    event.guild.getRoleById(configuration.adminAwardRoleId) ?: return@queue // No role configured
-                event.guild.addRoleToMember(author, adminRole).queue()
-            } else {
-                event.guild.addRoleToMember(author, role).queue()
+
+            if (member == null) {
+                log.error("RoleAwardListenerAdapter - No such member {} - ({})", author.name, author.effectiveAvatarUrl)
+                return@queue
             }
+
+            val roleId =
+                if (member.hasPermission(Permission.ADMINISTRATOR))
+                    configuration.adminAwardRoleId
+                else
+                    configuration.roleId
+
+
+            val role = getRoleFromEventGuild(event, roleId) ?: run {
+                log.error("Role {} not found", roleId)
+                return@queue
+            }
+
+            if(member.roles.contains(role)) {
+                log.info("RoleAwardListenerAdapter - Member already has role {}", role)
+                return@queue
+            }
+
+            event.guild.addRoleToMember(member, role).queue()
+
             val warningChannel = event.jda.getTextChannelById(configuration.warningChannelId)
             warningChannel?.sendMessage(":lemon: Utilizador ${author.effectiveName} (@${author.name}) foi limonado (${message.jumpUrl}).")
                 ?.queue()
         }
     }
+
+    private fun getRoleFromEventGuild(event: MessageReactionAddEvent, roleId: Long): Role? =
+        event.guild.getRoleById(roleId)
+
 }
