@@ -7,6 +7,7 @@ import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.persistence.dto.module.NewUserLookoutConfiguration
 import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.entities.MessageType
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
 class NewUserLookoutListenerAdapter (
@@ -22,6 +23,7 @@ class NewUserLookoutListenerAdapter (
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
         if (event.message.channel.idLong != configuration.listenChannelId) return //Is on right channel?
+        if (event.message.type != MessageType.DEFAULT) return
         if( event.message.member?.roles?.find { r -> r.idLong == configuration.newUserRoleId } == null ) return //Has right role?
 
         if (userCooldownMap.containsKey( event.author.idLong) &&
