@@ -64,9 +64,8 @@ class ExperimentalDiceListenerAdapter(
     }
 
     private fun doRoll(formula: String, userName: String, jda: JDA, sendReply: (String) -> Unit) {
-        val parsed = parse(formula)
-
         try {
+            val parsed = parse(formula)
             var rawReply = parsed.prettyPrint()
             diceMap.mapValues {
                 val diceEmojiId = it.value
