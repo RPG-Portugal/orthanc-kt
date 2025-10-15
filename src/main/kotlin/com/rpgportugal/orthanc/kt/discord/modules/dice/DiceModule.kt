@@ -33,6 +33,7 @@ class DiceModule(
             }
 
             val listenerAdapter = DiceListenerAdapter(jda, emojis)
+            val experimentalListenerAdapter = ExperimentalDiceListenerAdapter(jda, emojis)
 
             jda.updateCommands {
                 slash("roll", "rola todos os dados") {
@@ -40,7 +41,7 @@ class DiceModule(
                 }
             }.queue()
 
-            return TryCloseable { listenerAdapter.tryClose() }.asResult()
+            return TryCloseable { listenerAdapter.tryClose();experimentalListenerAdapter.tryClose() }.asResult()
 
         } catch (e: Exception) {
             log.error("start - failed to initialize DiceModule", e)

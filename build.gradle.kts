@@ -7,6 +7,9 @@ version = "2.0.3"
 
 repositories {
     mavenCentral()
+    maven {
+        url = uri("https://nexus.munin.wyvernia.net/repository/maven-releases")
+    }
 }
 
 val ktArrowVersion = properties["kt.arrow.version"]
@@ -34,6 +37,7 @@ dependencies {
     //Bot Module Dependencies
     implementation("dev.diceroll:dice-parser:${properties["diceparser.version"]}")
 
+    implementation("com.rpgportugal:dice-goblin:2025.10.15")
     // Test
     testImplementation(kotlin("test"))
 }
