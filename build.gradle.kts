@@ -37,7 +37,7 @@ dependencies {
     //Bot Module Dependencies
     implementation("dev.diceroll:dice-parser:${properties["diceparser.version"]}")
 
-    implementation("com.rpgportugal:dice-goblin:2025.10.15")
+    implementation("com.rpgportugal:dice-goblin:2025.10.15r2")
     // Test
     testImplementation(kotlin("test"))
 }
