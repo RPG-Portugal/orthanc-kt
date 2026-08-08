@@ -29,6 +29,7 @@ class SpamCatcherListenerAdapter(
     init {
         jda.addEventListener(this)
 
+        configuration.honeypotChannels.forEach { println(it) }
         val jobConfiguration = configuration.jobConfiguration
 
         val result = scheduler.simpleCronJobSchedule(
@@ -65,8 +66,7 @@ class SpamCatcherListenerAdapter(
         val message = event.message
 
         if (author.isBot) return
-
-        if (message.channel.idLong == configuration.honeypotChannelId) {
+        if (configuration.honeypotChannels.contains(message.channel.idLong) || message.channel.idLong == configuration.honeypotChannelId) {
             message.delete().queue()
 
             if (regex.matches(message.contentRaw)) {

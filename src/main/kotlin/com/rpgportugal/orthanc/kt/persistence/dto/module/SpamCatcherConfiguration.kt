@@ -20,8 +20,12 @@ open class SpamCatcherConfiguration {
     @Column(name = "linkRegex", nullable = false)
     open var linkRegex: String = ""
 
+    @Deprecated("Use honeypotChannels instead.")
     @Column(name = "honeypot_channel_id", nullable = false)
     open var honeypotChannelId: Long = 0
+
+    @Column(name = "honeypot_channels", nullable = true)
+    open var honeypotChannels: List<Long> = listOf()
 
     @Column(name = "warning_channel_id", nullable = false)
     open var warningChannelId: Long = 0
