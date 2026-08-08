@@ -6,6 +6,11 @@ interface ModuleStateError : DomainError {
         override val message: String = "module $moduleName is not running",
     ) : ModuleStateError
 
+    data class ModuleAlreadyRunning(
+        val moduleName: String,
+        override val message: String = "module $moduleName is already running",
+    ) : ModuleStateError
+
     data class ModuleDoesNotExist(
         val moduleName: String,
         override val message: String = "module $moduleName does not exist",

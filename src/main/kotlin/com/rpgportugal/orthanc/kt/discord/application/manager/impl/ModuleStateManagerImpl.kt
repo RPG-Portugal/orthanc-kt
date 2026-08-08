@@ -23,9 +23,9 @@ class ModuleStateManagerImpl(
         }
 
         return stateManager.accessState { runningMods ->
-            stopInternal(moduleName, runningMods)?.let { error ->
-                log.error("start - Failed to stop module: {}", error.message)
-                return@accessState error
+            if (runningMods.containsKey(moduleName)) {
+                log.error("start - module {} is already running", moduleName)
+                return@accessState ModuleStateError.ModuleAlreadyRunning(moduleName)
             }
 
             when (val result = module.start(this)) {
@@ -45,6 +45,11 @@ class ModuleStateManagerImpl(
     }
 
     override fun stop(moduleName: String): DomainError? {
+        if (!botModules.containsKey(moduleName)) {
+            log.error("stop - No such module: {}", moduleName)
+            return ModuleStateError.ModuleDoesNotExist(moduleName)
+        }
+
         return stateManager.accessState { runningMods ->
             stopInternal(moduleName, runningMods)
         }
@@ -66,19 +71,22 @@ class ModuleStateManagerImpl(
     }
 
     private fun stopInternal(moduleName: String, runningMods: MutableMap<String, TryCloseable>): DomainError? {
-        if (!runningMods.containsKey(moduleName)) {
+        val closeable = runningMods[moduleName]
+        if (closeable == null) {
             log.error("stop - module {} is not running", moduleName)
             return ModuleStateError.ModuleNotRunning(moduleName)
         }
-        return when (val result = runningMods.remove(moduleName)) {
-            is TryCloseable -> result.tryClose()?.also {
-                log.error("stop - module {} failed to stop: {}", moduleName, it.message)
-            }
-            else -> {
-                log.info("stop - Module {} not found", moduleName)
-                null
-            }
+
+        val error = closeable.tryClose()
+        if (error != null) {
+            log.error("stop - module {} failed to stop: {}", moduleName, error.message)
+            return error
         }
+
+        runningMods.remove(moduleName)
+        log.info("stop - module {} stopped", moduleName)
+
+        return null
     }
 
     private class StateManager(private val moduleStateManager: ModuleStateManager, allModules: Map<String, BotModule>) :

@@ -11,7 +11,6 @@ import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.persistence.dto.module.ModuleStateManagementConfiguration
 import net.dv8tion.jda.api.JDA
-import net.dv8tion.jda.api.entities.UserSnowflake
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
 class ModuleStateManagementListenerAdapter(
@@ -33,8 +32,13 @@ class ModuleStateManagementListenerAdapter(
     }
 
     override fun onMessageReceived(event: MessageReceivedEvent) {
+        if (!event.isFromGuild) {
+            return
+        }
+
         val msg = event.message
         val cmd = msg.contentStripped.lowercase().split(' ')
+
         if (cmd.size != 2) {
             return
         }
@@ -42,22 +46,14 @@ class ModuleStateManagementListenerAdapter(
         val command = cmd[0]
         val moduleName = cmd[1]
 
-        if (moduleName == this.evokerModuleName) {
-            log.warn("cannot evoke state commands on self: {}", moduleName)
-            return
-        }
-
-        val (error, operation) = when (command) {
-            "\$start" -> moduleStateManager.start(moduleName) to AppManagementOperation.Start
-            "\$stop" -> moduleStateManager.stop(moduleName) to AppManagementOperation.Stop
-            "\$check" -> moduleStateManager.failIfNotRunning(moduleName) to AppManagementOperation.Check
+        val operation = when (command) {
+            "\$start" -> AppManagementOperation.Start
+            "\$stop" -> AppManagementOperation.Stop
+            "\$check" -> AppManagementOperation.Check
             else -> return
         }
 
-        val member =
-            msg.guild
-                .getMember(UserSnowflake.fromId(msg.author.idLong))
-                ?: return
+        val member = event.member ?: return
 
         when (val res = permissionManager.hasPermission(Permission.ManageModuleState, member)) {
             is Either.Right -> {
@@ -69,8 +65,19 @@ class ModuleStateManagementListenerAdapter(
 
             is Either.Left -> {
                 log.error("onMessageReceived - failed to retrieve permissions - {}", res.value.message)
-                throw Exception(res.value.message)
+                return
             }
+        }
+
+        if (moduleName == this.evokerModuleName) {
+            log.warn("cannot evoke state commands on self: {}", moduleName)
+            return
+        }
+
+        val error = when (operation) {
+            AppManagementOperation.Start -> moduleStateManager.start(moduleName)
+            AppManagementOperation.Stop -> moduleStateManager.stop(moduleName)
+            AppManagementOperation.Check -> moduleStateManager.failIfNotRunning(moduleName)
         }
 
         val text =
