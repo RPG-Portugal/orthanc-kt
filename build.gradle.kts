@@ -35,7 +35,7 @@ dependencies {
     implementation("org.postgresql:postgresql:${properties["postgresql.driver.version"]}")
     implementation("org.quartz-scheduler:quartz:${properties["quartz.version"]}")
     //Bot Module Dependencies
-    implementation("com.rpgportugal:dice-goblin:2026.8.18")
+    implementation("com.rpgportugal:dice-goblin:2026.08.18r1")
     // Test
     testImplementation(kotlin("test"))
 }
