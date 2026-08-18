@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.rpgportugal"
-version = "2.0.3"
+version = "2.0.4"
 
 repositories {
     mavenCentral()
@@ -35,9 +35,7 @@ dependencies {
     implementation("org.postgresql:postgresql:${properties["postgresql.driver.version"]}")
     implementation("org.quartz-scheduler:quartz:${properties["quartz.version"]}")
     //Bot Module Dependencies
-    implementation("dev.diceroll:dice-parser:${properties["diceparser.version"]}")
-
-    implementation("com.rpgportugal:dice-goblin:2025.10.15r2")
+    implementation("com.rpgportugal:dice-goblin:2026.8.18")
     // Test
     testImplementation(kotlin("test"))
 }

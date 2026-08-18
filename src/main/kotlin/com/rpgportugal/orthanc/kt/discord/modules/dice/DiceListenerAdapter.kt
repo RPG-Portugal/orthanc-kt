@@ -1,13 +1,18 @@
 package com.rpgportugal.orthanc.kt.discord.modules.dice
 
-import arrow.core.Either
+import com.rpgportugal.dicegoblin.expressions.ExpressionResult
+import com.rpgportugal.dicegoblin.expressions.dice.NumberDiceExpression
+import com.rpgportugal.dicegoblin.expressions.modifiers.TargetModifier
+import com.rpgportugal.dicegoblin.expressions.operators.AddOperatorExpression
+import com.rpgportugal.dicegoblin.expressions.operators.SubOperatorExpression
+import com.rpgportugal.dicegoblin.expressions.result.GroupRollResult
+import com.rpgportugal.dicegoblin.expressions.result.RollResult
+import com.rpgportugal.dicegoblin.parser.parse
 import com.rpgportugal.orthanc.kt.discord.listener.CloseableListenerAdapter
-import com.rpgportugal.orthanc.kt.error.DiceModuleError
 import com.rpgportugal.orthanc.kt.error.DomainError
 import com.rpgportugal.orthanc.kt.error.ThrowableError
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
-import dev.diceroll.parser.*
 import dev.minn.jda.ktx.events.onCommand
 import dev.minn.jda.ktx.interactions.components.getOption
 import net.dv8tion.jda.api.JDA
@@ -58,133 +63,84 @@ class DiceListenerAdapter(
     }
 
     private fun doRoll(formula: String, userName: String, jda: JDA, sendReply: (String) -> Unit) {
-        val rollResult = Either.catch {
-            detailedRoll(formula)
-        }.mapLeft {
-            DiceModuleError.DiceParsingError(formula, it.message ?: "Error parsing the formula.")
-        }
-
-        when (rollResult) {
-            is Either.Left -> {
-                val error = rollResult.value
-                sendReply("$userName Error rolling ${error.formula} => ${error.message}.\nCheck this link for more information: https://github.com/diceroll-dev/dice-parser/tree/main?tab=readme-ov-file#supported-notation")
-            }
-
-            is Either.Right -> {
-                val resultTree = rollResult.value
-                var prettyText = resultTree.prettyPrint()
-
-                diceMap.mapValues {
-                    val diceEmojiId = it.value
-                    val default = "[${it.key}]"
-                    try {
-                        val diceEmoji = jda.getEmojiById(diceEmojiId)
-                        diceEmoji?.asMention ?: default
-                    } catch (e: Exception) {
-                        log.error("Failed to get emoji for {} / {}", it.key, it.value, e)
-                        default
-                    }
-                }.forEach {
-                    prettyText = prettyText.replace("[${it.key}]", it.value)
+        try {
+            val parsed = parse(formula)
+            var rawReply = parsed.prettyPrint()
+            diceMap.mapValues {
+                val diceEmojiId = it.value
+                val default = "[${it.key}]"
+                try {
+                    val diceEmoji = jda.getEmojiById(diceEmojiId)
+                    diceEmoji?.asMention ?: default
+                } catch (e: Exception) {
+                    log.error("Failed to get emoji for {} / {}", it.key, it.value, e)
+                    default
                 }
-
-                sendReply("O resultado é: $prettyText")
+            }.forEach {
+                rawReply = rawReply.replace("[${it.key}]", it.value)
             }
+            sendReply(rawReply)
+        } catch (error: Exception) {
+            sendReply("$userName Error rolling $formula => ${error.message}.")
         }
     }
 
-    private fun ResultTree.prettyPrint(): String {
+    private fun ExpressionResult.prettyPrint(): String {
         return when (this.expression) {
-            is NDice -> {
-                val nDice = this.expression as NDice
-                if (nDice.numberOfDice > 1) {
-                    this.results.joinToString(", ") { it.prettyPrint() } + " = ${this.value}"
-                } else {
-                    "[d${nDice.numberOfFaces}] ${this.value}"
-                }
-            }
+            is NumberDiceExpression -> {
 
-            is KeepDice -> prettyPrintKeepHighDice(this.expression as KeepDice, this)
-            is KeepLowDice -> prettyPrintKeepLowDice(this.expression as KeepLowDice, this)
-            is TargetPoolDice -> {
-                val targetPoolExpr = this.expression as TargetPoolDice
-                this.results.joinToString(", ") {
-                    when (targetPoolExpr.comparison) {
-                        Comparison.GREATER_THAN -> if (it.value >= targetPoolExpr.target) {
-                            "**${it.prettyPrint()}**"
-                        } else {
-                            it.prettyPrint()
-                        }
-
-                        Comparison.LESS_THAN -> if (it.value <= targetPoolExpr.target) {
-                            "**${it.prettyPrint()}**"
-                        } else {
-                            it.prettyPrint()
-                        }
-
-                        Comparison.EQUAL_TO -> if (it.value == targetPoolExpr.target) {
-                            "**${it.prettyPrint()}**"
-                        } else {
-                            it.prettyPrint()
-                        }
+                val result =
+                    when ((this.expression as NumberDiceExpression).modifier) {
+                        is TargetModifier -> this.resultList.count { it.face.enabled }
+                        else -> this.resultList.sumEnabled()
                     }
-                } + " = ${this.value}"
+
+                " " + this.resultList.map {
+                    it.prettyPrint()
+                }.reduce { acc, s ->
+                    "$acc $s"
+                } + " = " + result
             }
 
-            is FudgeDice -> {
-                val fudgeExpr = this.expression as FudgeDice
-                fudgeExpr.numberOfFaces
-                if (this.results.isNotEmpty())
-                    this.results.joinToString(", ") { it.prettyPrint() } + " = ${this.value}"
-                else
-                    "[df] ${this.value}"
+            is AddOperatorExpression -> {
+                this.subResults.map { "(${it.prettyPrint()})" }
+                    .reduce { acc, s -> "$acc + $s" } + " = ${this.resultList.sumEnabled()}"
             }
 
-            is MathExpression -> {
-                val mathExpr = this.expression as MathExpression
-
-                "(${this.results[0].prettyPrint()}) ${mathExpr.operation.description} (${this.results[1].prettyPrint()}) = ${this.value}"
+            is SubOperatorExpression -> {
+                this.subResults.map { "(${it.prettyPrint()})" }.reduce { acc, s -> "$acc - $s" } + " = ${
+                    this.resultList.map { it.face.getValue() }.reduce { acc, i -> acc - i }
+                }"
             }
 
             else -> {
-                if (this.results.isNotEmpty())
-                    this.results.joinToString(", ") { it.prettyPrint() } + " = ${this.value}"
-                else
-                    "${this.value}"
+                this.resultList.map { it.face.getValue().toString() }.reduce { acc, s -> "$acc, $s" }
             }
         }
     }
 
-    private fun prettyPrintKeepHighDice(kDice: KeepDice, resultTree: ResultTree): String {
-        val sortedResults = resultTree.results.sortedBy { it.value }
-        return prettyPrintKeepDice(kDice.numberToKeep, resultTree, sortedResults)
+    private fun List<RollResult>.sumEnabled() = this.sumOf {
+        when (it) {
+            is GroupRollResult -> if (it.face.enabled) it.face.getValue()*it.count else 0
+            else -> if (it.face.enabled) it.face.getValue() else 0
+        }
+
     }
 
-    private fun prettyPrintKeepLowDice(kDice: KeepLowDice, resultTree: ResultTree): String {
-        val sortedResults = resultTree.results.sortedBy { it.value }.reversed()
-        return prettyPrintKeepDice(kDice.numberToKeep, resultTree, sortedResults)
+    private fun RollResult.prettyPrint(): String {
+        return when (this) {
+            is GroupRollResult -> this.prettyPrint()
+            else -> {
+                val diceTag = if (this.diceType != null) "[d${this.diceType!!.getName()}]" else ""
+                val final = "$diceTag ${this.face.getSymbol()}"
+                return if (this.face.enabled) final else "~~$final~~"
+            }
+        }
     }
 
-    private fun prettyPrintKeepDice(
-        numberToKeep: Int,
-        resultTree: ResultTree,
-        sortedResults: List<ResultTree>,
-    ): String {
-        val survivors = sortedResults.takeLast(numberToKeep)
-        val failures = sortedResults.filter { !survivors.contains(it) }
-
-        return resultTree.results.joinToString(", ") {
-            if (failures.contains(it)) {
-                "~~"
-            } else {
-                ""
-            } +
-                    it.prettyPrint() +
-                    if (failures.contains(it)) {
-                        "~~"
-                    } else {
-                        ""
-                    }
-        } + " = ${resultTree.value}"
+    private fun GroupRollResult.prettyPrint(): String {
+        val diceTag = if (this.diceType != null) "[d${this.diceType!!.getName()}]" else ""
+        val final = "$diceTag ${this.face.getSymbol()} = ${this.count}\n"
+        return if (this.face.enabled) final else "~~$final~~"
     }
 }
