@@ -86,7 +86,7 @@ class DiceListenerAdapter(
     }
 
     private fun ExpressionResult.prettyPrint(): String {
-        return when (this.expression) {
+        val result = when (this.expression) {
             is NumberDiceExpression -> {
 
                 val result =
@@ -117,6 +117,8 @@ class DiceListenerAdapter(
                 this.resultList.map { it.face.getValue().toString() }.reduce { acc, s -> "$acc, $s" }
             }
         }
+
+        return result + if(this.comment?.isNotBlank() ?: false) { " ${this.comment}" } else ""
     }
 
     private fun List<RollResult>.sumEnabled() = this.sumOf {
