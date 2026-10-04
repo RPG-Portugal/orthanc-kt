@@ -3,12 +3,22 @@ package com.rpgportugal.orthanc.kt.dependencies
 import com.rpgportugal.orthanc.kt.logging.Loggable
 import com.rpgportugal.orthanc.kt.logging.log
 import com.rpgportugal.orthanc.kt.persistence.repository.application.ApplicationRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.collectable.BoosterTypeRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.collectable.CadernetaRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.collectable.CollectableItemRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.collectable.CollectableRepository
+import com.rpgportugal.orthanc.kt.persistence.repository.collectable.UserCollectorProfileRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.emoji.EmojiRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.job.JobRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.module.BotModuleConfigurationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.module.ModuleStateManagementConfigurationRepository
 import com.rpgportugal.orthanc.kt.persistence.repository.permission.RolePermissionRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.application.SqlApplicationRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.collectable.SqlBoosterTypeRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.collectable.SqlCollectableItemRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.collectable.SqlCollectableRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.collectable.SqlUserCollectorProfileRepository
+import com.rpgportugal.orthanc.kt.persistence.sql.collectable.SqlCadernetaRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.emoji.SqlEmojiRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.job.SqlJobRepository
 import com.rpgportugal.orthanc.kt.persistence.sql.module.SqlBotModuleConfigurationRepository
@@ -33,6 +43,11 @@ object DbModule : DepModule, Loggable {
         singleOf(::buildSessionFactory).bind(SessionFactory::class)
         factoryOf(::createEntityManager).bind(EntityManager::class)
         factoryOf(::SqlApplicationRepository).bind(ApplicationRepository::class)
+        factoryOf(::SqlCollectableRepository).bind(CollectableRepository::class)
+        factoryOf(::SqlBoosterTypeRepository).bind(BoosterTypeRepository::class)
+        factoryOf(::SqlCollectableItemRepository).bind(CollectableItemRepository::class)
+        factoryOf(::SqlUserCollectorProfileRepository).bind(UserCollectorProfileRepository::class)
+        factoryOf(::SqlCadernetaRepository).bind(CadernetaRepository::class)
         factoryOf(::SqlEmojiRepository).bind(EmojiRepository::class)
         factoryOf(::SqlJobRepository).bind(JobRepository::class)
         factoryOf(::SqlBotModuleConfigurationRepository).bind(BotModuleConfigurationRepository::class)
@@ -63,11 +78,23 @@ object DbModule : DepModule, Loggable {
                 "hibernate.connection.url",
                 jdbcUrl
             )
+            setProperty(
+                "hibernate.connection.autocommit",
+                "true"
+            )
+            setProperty(
+                "hibernate.enable_lazy_load_no_trans",
+                "true"
+            )
         }
 
-        val persistenceClasses =
+        val persistenceClasses = (
             Reflections("com.rpgportugal.orthanc.kt.persistence.dto")
                 .getTypesAnnotatedWith(Entity::class.java) ?: emptyList()
+        ) + (
+            Reflections("com.rpgportugal.orthanc.kt.discord.modules.collector.dto")
+                .getTypesAnnotatedWith(Entity::class.java) ?: emptyList()
+        )
 
         return Configuration()
             .addProperties(properties)

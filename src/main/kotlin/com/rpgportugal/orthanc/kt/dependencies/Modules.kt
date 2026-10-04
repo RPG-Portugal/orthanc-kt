@@ -18,6 +18,7 @@ object Modules {
         JdaModule,
         ApplicationManagerModule,
         NewUserLookoutDepModule,
+        CollectorDepModule
     ).map {
         it.module
     }

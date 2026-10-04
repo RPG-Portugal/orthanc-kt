@@ -34,6 +34,7 @@ object JdaModule : DepModule, Loggable {
                         is DbError.EntityNotUnique<*> ->
                             throw Exception("Entity ${error.entityName} with id = ${error.id} not unique")
 
+                        is DbError.Unknown -> throw Exception("Unknown error: ${error.message}")
                         is ThrowableError<*> ->
                             throw error.exception
                     }

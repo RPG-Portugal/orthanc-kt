@@ -34,6 +34,8 @@ dependencies {
     implementation("org.reflections:reflections:${properties["reflections.version"]}")
     implementation("org.postgresql:postgresql:${properties["postgresql.driver.version"]}")
     implementation("org.quartz-scheduler:quartz:${properties["quartz.version"]}")
+    implementation("org.jsoup:jsoup:${properties["jsoup.version"]}")
+    implementation("com.github.ben-manes.caffeine:caffeine:${properties["caffeine.version"]}")
     //Bot Module Dependencies
     implementation("com.rpgportugal:dice-goblin:2026.08.18r2")
     // Test

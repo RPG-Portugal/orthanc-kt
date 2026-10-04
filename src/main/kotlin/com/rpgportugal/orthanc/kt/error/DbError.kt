@@ -12,4 +12,8 @@ sealed interface DbError : DomainError {
         val id: Id,
         override val message: String,
     ) : DbError
+
+    data class Unknown (
+        override val message: String,
+    ) : DbError
 }
